@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>June 13, 2026 — Wedding Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF8F4;--sage:#8A9E8C;--sage-light:#D4DDD5;--sage-dark:#5C7060;
+  --dusty-rose:#C4958A;--dusty-rose-light:#EDD8D4;--charcoal:#2C2C2A;
+  --warm-gray:#6B6862;--light-gray:#E8E5E0;--border:#D8D4CE;
+  --urgent-bg:#FDF0EE;--urgent-border:#E8B5AD;--urgent-text:#8B3D35;
+  --warning-bg:#FDF6EC;--warning-border:#E8D4A8;--warning-text:#7A5C1E;
+  --success-bg:#EFF4F0;--success-border:#AECBB3;--success-text:#3A6640;
+  --info-bg:#EEF2F8;--info-border:#ADC0DC;--info-text:#2E4A70;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--charcoal);font-size:14px;line-height:1.6;min-height:100vh}
+.page-header{background:var(--charcoal);color:var(--cream);padding:2.5rem 2rem 2rem;text-align:center}
+.page-header h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:2.8rem;letter-spacing:0.04em;margin-bottom:0.25rem}
+.page-header .subtitle{font-size:12px;font-weight:300;letter-spacing:0.12em;text-transform:uppercase;opacity:0.65;margin-bottom:1.5rem}
+.session-bar{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.last-saved{font-size:11px;opacity:0.5;letter-spacing:0.05em}
+.btn-session{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;letter-spacing:0.05em;border-radius:2px;cursor:pointer;transition:all 0.15s;border:none}
+.btn-save{background:var(--sage);color:white}.btn-save:hover{background:var(--sage-dark)}
+.btn-load{background:transparent;color:var(--cream);border:1px solid rgba(255,255,255,0.35)}.btn-load:hover{border-color:rgba(255,255,255,0.7)}
+.btn-export{background:transparent;color:var(--cream);border:1px solid rgba(255,255,255,0.35)}.btn-export:hover{border-color:rgba(255,255,255,0.7)}
+#file-upload{display:none}
+.nav{background:white;border-bottom:1px solid var(--border);display:flex;overflow-x:auto;position:sticky;top:0;z-index:100}
+.nav-tab{padding:14px 16px;font-size:11px;font-weight:400;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;border:none;background:none;color:var(--warm-gray);white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.nav-tab:hover{color:var(--charcoal)}.nav-tab.active{color:var(--charcoal);border-bottom-color:var(--dusty-rose);font-weight:500}
+.container{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+.tab-content{display:none}.tab-content.active{display:block}
+.alert-box{padding:12px 16px;border-radius:2px;margin-bottom:1rem;border-left:3px solid;font-size:13px;line-height:1.5}
+.alert-urgent{background:var(--urgent-bg);border-color:var(--dusty-rose);color:var(--urgent-text)}
+.alert-info{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
+.alert-box strong{font-weight:500}
+.task-card{background:white;border:1px solid var(--border);border-radius:2px;padding:12px 14px;margin-bottom:6px;display:flex;gap:12px;align-items:flex-start;transition:border-color 0.15s}
+.task-card:hover{border-color:var(--sage-light)}.task-card.done{opacity:0.5}.task-card.done .task-title{text-decoration:line-through}
+.task-card input[type=checkbox]{margin-top:2px;flex-shrink:0;width:15px;height:15px;cursor:pointer;accent-color:var(--sage)}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:13px;color:var(--charcoal);line-height:1.4}
+.task-meta{display:flex;gap:6px;align-items:center;margin-top:5px;flex-wrap:wrap}
+.task-note{font-size:12px;color:var(--warm-gray);margin-top:5px;line-height:1.5;font-style:italic}
+.badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500;letter-spacing:0.04em;white-space:nowrap}
+.badge-urgent{background:var(--urgent-bg);color:var(--urgent-text);border:1px solid var(--urgent-border)}
+.badge-warning{background:var(--warning-bg);color:var(--warning-text);border:1px solid var(--warning-border)}
+.badge-info{background:var(--info-bg);color:var(--info-text);border:1px solid var(--info-border)}
+.badge-success{background:var(--success-bg);color:var(--success-text);border:1px solid var(--success-border)}
+.badge-neutral{background:var(--light-gray);color:var(--warm-gray);border:1px solid var(--border)}
+.task-who{font-size:11px;color:var(--warm-gray);letter-spacing:0.03em}
+.filter-bar{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.filter-btn{font-size:11px;padding:4px 12px;border:1px solid var(--border);border-radius:20px;background:none;color:var(--warm-gray);cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.04em;transition:all 0.15s}
+.filter-btn:hover{border-color:var(--sage);color:var(--sage-dark)}.filter-btn.active{background:var(--charcoal);color:white;border-color:var(--charcoal)}
+.tl-row{display:flex;gap:12px;margin-bottom:4px}
+.tl-time{font-size:11px;font-weight:500;color:var(--warm-gray);min-width:60px;padding-top:13px;text-align:right;letter-spacing:0.03em;white-space:nowrap}
+.tl-line{display:flex;flex-direction:column;align-items:center;padding-top:13px}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--border)}
+.tl-dot.urgent{background:var(--dusty-rose)}.tl-dot.warning{background:#C9A95A}.tl-dot.done-dot{background:var(--sage)}
+.tl-conn{width:1px;background:var(--border);flex:1;margin-top:4px}
+.tl-card{flex:1;background:white;border:1px solid var(--border);border-radius:2px;padding:10px 12px;margin-bottom:4px}
+.tl-card.done{opacity:0.5}
+.tl-title{font-size:13px;color:var(--charcoal);line-height:1.4;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
+.tl-title input[type=checkbox]{margin-top:2px;flex-shrink:0;width:14px;height:14px;cursor:pointer;accent-color:var(--sage)}
+.tl-note{font-size:12px;color:var(--warm-gray);margin-top:4px;font-style:italic;line-height:1.5}
+.tl-duration{font-size:11px;color:var(--dusty-rose);font-weight:500;white-space:nowrap;margin-top:3px}
+.form-section{background:white;border:1px solid var(--border);border-radius:2px;padding:1.5rem;margin-bottom:1rem}
+.form-section h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--charcoal);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--light-gray);letter-spacing:0.02em}
+.fq{margin-bottom:1rem}.fq:last-child{margin-bottom:0}
+.fq label{display:block;font-size:12px;font-weight:500;color:var(--charcoal);margin-bottom:5px;letter-spacing:0.03em}
+.fq .sublabel{font-size:11px;font-weight:400;color:var(--warm-gray);font-style:italic;margin-bottom:6px;line-height:1.4}
+.fq input[type=text],.fq textarea,.fq select{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--charcoal);background:var(--cream);border:1px solid var(--border);border-radius:2px;padding:8px 10px;transition:border-color 0.15s}
+.fq input[type=text]:focus,.fq textarea:focus,.fq select:focus{outline:none;border-color:var(--sage)}
+.fq textarea{resize:vertical;min-height:64px}
+.fq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.radio-group{display:flex;gap:14px;flex-wrap:wrap;margin-top:5px}
+.radio-group label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:400;color:var(--charcoal);cursor:pointer;margin-bottom:0;letter-spacing:0}
+.radio-group input[type=radio]{accent-color:var(--sage);width:14px;height:14px;cursor:pointer}
+.checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.checkbox-grid label{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:400;cursor:pointer;margin-bottom:0;letter-spacing:0}
+.checkbox-grid input[type=checkbox]{accent-color:var(--sage);width:14px;height:14px;cursor:pointer}
+.hint{font-size:11px;color:var(--warm-gray);margin-top:4px;font-style:italic;line-height:1.4}
+.info-box{background:var(--info-bg);border:1px solid var(--info-border);border-radius:2px;padding:10px 14px;margin-top:6px}
+.info-box p{font-size:12px;color:var(--info-text);line-height:1.5}
+.info-box strong{font-weight:500}
+.example-list{font-size:12px;color:var(--info-text);margin-top:6px;padding-left:0;list-style:none}
+.example-list li{padding:3px 0;padding-left:14px;position:relative}
+.example-list li:before{content:"·";position:absolute;left:0;color:var(--dusty-rose)}
+.form-actions{display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap;align-items:center}
+.btn-primary{padding:10px 22px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;background:var(--sage);color:white;border:none;border-radius:2px;cursor:pointer;letter-spacing:0.04em;transition:background 0.15s}
+.btn-primary:hover{background:var(--sage-dark)}
+.btn-secondary{padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;background:white;color:var(--charcoal);border:1px solid var(--border);border-radius:2px;cursor:pointer;transition:all 0.15s}
+.btn-secondary:hover{border-color:var(--charcoal)}
+.save-confirm{font-size:12px;color:var(--success-text);display:none}
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:8px;margin-bottom:1rem}
+.person-card{background:white;border:1px solid var(--border);border-radius:2px;padding:10px 12px}
+.person-card input{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--charcoal);border:none;background:transparent;width:100%;padding:0;margin-bottom:2px}
+.person-card input:focus{outline:none;border-bottom:1px solid var(--sage)}
+.person-card input::placeholder{color:var(--light-gray);font-weight:400}
+.person-role{font-size:11px;color:var(--warm-gray);letter-spacing:0.04em}
+.vendor-card{background:white;border:1px solid var(--border);border-radius:2px;padding:10px 14px;margin-bottom:6px}
+.vendor-name{font-size:13px;font-weight:500;color:var(--charcoal)}
+.vendor-note{font-size:12px;color:var(--warm-gray);margin-top:3px;font-style:italic;line-height:1.4}
+.export-row{display:flex;gap:8px;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);flex-wrap:wrap;align-items:center}
+.export-row span{font-size:11px;color:var(--warm-gray);flex:1}
+.section-divider{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;color:var(--warm-gray);margin:2rem 0 0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border)}
+.task-assign-row{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center}
+.task-assign-row input,.task-assign-row select{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--charcoal);background:var(--cream);border:1px solid var(--border);border-radius:2px;padding:3px 7px;height:26px}
+.task-assign-row input:focus,.task-assign-row select:focus{outline:none;border-color:var(--sage)}
+.task-assign-row .assign-label{font-size:10px;color:var(--warm-gray);letter-spacing:0.05em;text-transform:uppercase;line-height:26px}
+.task-assign-row input[list]{min-width:140px;flex:1}
+.task-assign-row .due-input{min-width:110px}
+.sort-bar{display:flex;gap:8px;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap}
+.sort-bar label{font-size:12px;color:var(--warm-gray);letter-spacing:0.04em}
+.sort-bar select{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--charcoal);background:var(--cream);border:1px solid var(--border);border-radius:2px;padding:6px 10px;cursor:pointer}
+.sort-bar select:focus{outline:none;border-color:var(--sage)}
+.print-section{background:white;border:1px solid var(--border);border-radius:2px;padding:1.5rem;margin-bottom:1rem}
+.print-section h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--charcoal);margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--light-gray)}
+.print-btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:0.75rem}
+.print-hint{font-size:11px;color:var(--warm-gray);font-style:italic;margin-top:6px;line-height:1.5}
+.print-hint strong{font-weight:500;color:var(--charcoal)}
+
+/* ── PRINT STYLES ── */
+@media print{
+  body{background:white;font-size:11pt;color:#1a1a18;font-family:'DM Sans',Georgia,serif}
+  .page-header,.nav,.session-bar,.no-print,.export-row,.form-actions,.filter-bar,.sort-bar,.print-btn-row,.print-hint,.tab-content:not(.active){display:none!important}
+  .container{max-width:100%;padding:0;margin:0}
+  .print-sheet{display:block!important}
+  .print-header{text-align:center;border-bottom:2px solid #2C2C2A;padding-bottom:12pt;margin-bottom:16pt}
+  .print-header h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:22pt;font-weight:300;letter-spacing:0.04em;margin-bottom:2pt}
+  .print-header p{font-size:9pt;color:#6B6862;letter-spacing:0.08em;text-transform:uppercase}
+  .print-person-header{font-size:14pt;font-weight:500;color:#2C2C2A;margin:16pt 0 6pt;border-bottom:1px solid #D8D4CE;padding-bottom:4pt;page-break-after:avoid}
+  .print-cat-header{font-size:9pt;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:#6B6862;margin:10pt 0 4pt}
+  .print-task-row{display:flex;gap:8pt;align-items:flex-start;padding:5pt 0;border-bottom:0.5pt solid #E8E5E0;page-break-inside:avoid}
+  .print-check{width:10pt;height:10pt;border:1pt solid #2C2C2A;border-radius:1pt;flex-shrink:0;margin-top:2pt}
+  .print-task-body{flex:1}
+  .print-task-title{font-size:10pt;color:#2C2C2A;line-height:1.3}
+  .print-task-note{font-size:8.5pt;color:#6B6862;margin-top:2pt;font-style:italic;line-height:1.3}
+  .print-task-meta{font-size:8pt;color:#8A9E8C;margin-top:2pt}
+  .print-tl-row{display:flex;gap:8pt;padding:4pt 0;border-bottom:0.5pt solid #E8E5E0;page-break-inside:avoid}
+  .print-tl-time{font-size:9pt;font-weight:500;min-width:54pt;color:#6B6862;padding-top:1pt}
+  .print-tl-body{flex:1}
+  .print-tl-title{font-size:10pt;color:#2C2C2A;line-height:1.3}
+  .print-tl-meta{font-size:8pt;color:#8A9E8C;margin-top:1pt}
+  .print-tl-note{font-size:8.5pt;color:#6B6862;margin-top:2pt;font-style:italic;line-height:1.3}
+  .print-page-break{page-break-before:always}
+  .task-card,.tl-card{border:none!important;padding:0!important;margin-bottom:0!important}
+  .task-card input[type=checkbox],.tl-card input[type=checkbox],.task-assign-row,.tl-title input[type=checkbox]{display:none!important}
+}
+@media(max-width:600px){
+  .page-header h1{font-size:2rem}
+  .fq-grid{grid-template-columns:1fr}
+  .checkbox-grid{grid-template-columns:1fr}
+  .container{padding:1.25rem 1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>June 13, 2026</h1>
+  <p class="subtitle">Wedding Planner &nbsp;·&nbsp; Civil Ceremony, Idaho &nbsp;·&nbsp; ~50 Guests &nbsp;·&nbsp; 2:00 pm – 10:00 pm</p>
+  <div class="session-bar">
+    <button class="btn-session btn-save" onclick="saveSession()">&#8595; Save session</button>
+    <label class="btn-session btn-load" for="file-upload">&#8593; Load session</label>
+    <input type="file" id="file-upload" accept=".json" onchange="loadSession(event)">
+    <button class="btn-session btn-export" onclick="exportCSV()">&#8599; Export to CSV</button>
+    <span class="last-saved" id="last-saved"></span>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nav-tab active" onclick="showTab('intake',this)">Intake form</button>
+  <button class="nav-tab" onclick="showTab('urgent',this)">Urgent gaps</button>
+  <button class="nav-tab" onclick="showTab('pre',this)">Before June 13</button>
+  <button class="nav-tab" onclick="showTab('tl',this)">Day-of timeline</button>
+  <button class="nav-tab" onclick="showTab('people',this)">People & roles</button>
+  <button class="nav-tab" onclick="showTab('print',this)">Print &amp; sort</button>
+</nav>
+
+<div class="container">
+
+<!-- ═══════════════ INTAKE FORM ═══════════════ -->
+<div id="tab-intake" class="tab-content active">
+<div class="alert-box alert-info" style="margin-bottom:1.5rem">
+  <strong>For the bride and groom:</strong> Fill in what you know. Skip anything not yet decided — unanswered items appear automatically in Urgent Gaps. Save session at the top to download your progress as a .json file you can reload anytime.
+</div>
+
+<div class="form-section">
+  <h3>Legal and ceremony</h3>
+  <div class="fq">
+    <label>Has the Idaho marriage license been obtained?</label>
+    <p class="sublabel">Both parties must appear in person at the county recorder. Bring photo ID and Social Security numbers. Fee ~$28–$30. No waiting period.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="license" value="yes"> Yes, obtained</label>
+      <label><input type="radio" name="license" value="no"> Not yet</label>
+      <label><input type="radio" name="license" value="unsure"> Not sure</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>Is an officiant confirmed and legally authorized?</label>
+    <p class="sublabel">Idaho Code § 32-303 requires the officiant to be a judge, magistrate, mayor, or ordained minister. Online ordination via AMM or ULC is valid in Idaho at no cost.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="officiant" value="yes"> Yes, confirmed</label>
+      <label><input type="radio" name="officiant" value="no"> Not yet</label>
+    </div>
+  </div>
+  <div class="fq-grid">
+    <div class="fq"><label>Officiant name</label><input type="text" id="f-offname" placeholder="Full name"></div>
+    <div class="fq"><label>Officiant phone</label><input type="text" id="f-offphone" placeholder="Phone number"></div>
+  </div>
+  <div class="fq">
+    <label>Where will the ceremony take place?</label>
+    <p class="sublabel">Two indoor rooms hold ~30 seated. A plan for all 50 guests is needed. June in Idaho is warm — have a heat or weather backup if outdoors.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="ceremon-loc" value="indoor"> Indoors</label>
+      <label><input type="radio" name="ceremon-loc" value="outdoor"> Outdoors</label>
+      <label><input type="radio" name="ceremon-loc" value="undecided"> Not decided</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>Processional order — who walks and in what sequence?</label>
+    <textarea id="f-procession" placeholder="Example: Groomsman 1 escorts groom's mother to seat, Groomsman 2 escorts bride's mother to seat, then Bridesmaid 2, Bridesmaid 3, Maid of Honor walk, then Bride with her father..."></textarea>
+  </div>
+  <div class="fq">
+    <label>Who physically cues each person to begin walking?</label>
+    <input type="text" id="f-procue" placeholder="Name — this person stands at the back and taps each walker at the right moment">
+  </div>
+  <div class="fq">
+    <label>Will groomsmen escort family members to seats before the processional?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="escort" value="yes"> Yes</label>
+      <label><input type="radio" name="escort" value="no"> No</label>
+    </div>
+  </div>
+  <div class="fq"><label>If yes — who escorts whom?</label><input type="text" id="f-escortpairs" placeholder="Example: Groomsman 1 escorts groom's mother, Groomsman 2 escorts bride's mother..."></div>
+  <div class="fq">
+    <label>Vows</label>
+    <div class="radio-group">
+      <label><input type="radio" name="vows" value="own"> Writing our own</label>
+      <label><input type="radio" name="vows" value="traditional"> Traditional wording</label>
+      <label><input type="radio" name="vows" value="officiant"> Officiant will provide</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>Will you use vow books or printed cards?</label>
+    <p class="sublabel">Phones work but photograph awkwardly. Small printed cards or vow books look intentional and are easy to prepare.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="vowbooks" value="yes"> Yes</label>
+      <label><input type="radio" name="vowbooks" value="no"> No / phone is fine</label>
+      <label><input type="radio" name="vowbooks" value="na"> Not writing own vows</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>Will there be ceremony programs?</label>
+    <p class="sublabel">Programs tell guests the order of events, wedding party names, and song choices. Especially useful with no announcer at the start.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="programs" value="yes"> Yes</label>
+      <label><input type="radio" name="programs" value="no"> No</label>
+      <label><input type="radio" name="programs" value="maybe"> Not decided</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>How do you want to be announced at the grand entrance?</label>
+    <p class="sublabel">The emcee needs the exact wording in advance. Getting it wrong in the moment is more common than couples expect.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="announcement" value="mrandmrs"> "Mr. and Mrs. [last name]"</label>
+      <label><input type="radio" name="announcement" value="firstnames"> First names only</label>
+      <label><input type="radio" name="announcement" value="custom"> Custom wording</label>
+    </div>
+  </div>
+  <div class="fq"><label>If custom — exact announcement wording for the emcee</label><input type="text" id="f-announcement-text" placeholder="Write out exactly what you want the emcee to say"></div>
+  <div class="fq">
+    <label>Have you and your partner talked about the first kiss?</label>
+    <p class="sublabel">A quick conversation prevents an awkward frozen moment. Agree on length, whether to turn toward guests, and whether to expect applause before breaking apart.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="firstkiss" value="yes"> Yes, we have a plan</label>
+      <label><input type="radio" name="firstkiss" value="no"> Not yet — good reminder</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>Has someone practiced bustling the bride's dress?</label>
+    <p class="sublabel">If the dress has a bustle, the person who will manage it should practice before June 13 and ideally record a short video so they remember the steps in the moment. A train being stepped on during the first dance is entirely avoidable.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="bustle" value="yes"> Yes, practiced and recorded</label>
+      <label><input type="radio" name="bustle" value="no"> Not yet</label>
+      <label><input type="radio" name="bustle" value="na"> Dress does not have a bustle</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>What will the bridal party wear during getting-ready photos?</label>
+    <p class="sublabel">The photographer arrives at 10:30 am and will capture the bridal party getting ready. Matching robes, silk slips, or coordinated casual attire photograph significantly better than random street clothes. This does not need to be expensive — matching robes from Amazon run $20–$30 each.</p>
+    <input type="text" id="f-getting-ready-attire" placeholder="Matching robes, silk slips, coordinated pajamas, or street clothes — whatever is planned">
+  </div>
+  <div class="fq"><label>Anything else you want during the ceremony?</label><textarea id="f-ceremon-extra" placeholder="Readings, unity candle, special ritual, moment of silence..."></textarea></div>
+</div>
+
+<div class="form-section">
+  <h3>Rehearsal</h3>
+  <div class="alert-box alert-info" style="margin-bottom:1rem">
+    <strong>Why a rehearsal matters without a coordinator:</strong> A rehearsal typically takes 20–30 minutes and covers only movement — who walks where, when, and in what order. It does not require a full ceremony read-through. <strong>The single most important outcome</strong> is identifying who leads the cue at the back of the ceremony space. Without that person rehearsed and confident, the processional stalls.
+  </div>
+  <div class="fq">
+    <label>Will there be a rehearsal?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="rehearsal" value="yes"> Yes</label>
+      <label><input type="radio" name="rehearsal" value="no"> No</label>
+      <label><input type="radio" name="rehearsal" value="maybe"> Not decided</label>
+    </div>
+  </div>
+  <div class="fq-grid">
+    <div class="fq"><label>Rehearsal date and time</label><input type="text" id="f-rehearsal-date" placeholder="Example: June 12, 5:00 pm"></div>
+    <div class="fq"><label>Rehearsal location</label><input type="text" id="f-rehearsal-loc" placeholder="At the venue or another space?"></div>
+  </div>
+  <div class="fq">
+    <label>Who leads the rehearsal?</label>
+    <p class="sublabel">One person must lead — not a committee. The officiant is ideal if available. Otherwise the point person, best man, or maid of honor. The leader on the day before should be the same person cuing walkers on June 13.</p>
+    <input type="text" id="f-rehearsal-lead" placeholder="Name and role">
+  </div>
+  <div class="fq">
+    <label>Who attends the rehearsal?</label>
+    <p class="sublabel">Only people with a role in the ceremony need to attend: the couple, officiant, all wedding party members, parents walking or being escorted, and anyone giving a reading.</p>
+    <textarea id="f-rehearsal-who" placeholder="List names — officiant, bride, groom, bridesmaids, groomsmen, parents being escorted..."></textarea>
+  </div>
+  <div class="fq">
+    <label>If no rehearsal — how will wedding party members know what to do?</label>
+    <p class="sublabel">If skipping a formal rehearsal, the couple must distribute a written processional order to every participant at least 2 days before, and the cue person must individually confirm with each walker what signal they will use.</p>
+    <div class="info-box">
+      <p><strong>Minimum no-rehearsal plan:</strong> Written processional order delivered to every participant by June 11. Cue person calls or texts each walker the day before to walk through their specific moment. Music operator has a written cue sheet. Officiant has a written ceremony order. All four of these things together can substitute for a rehearsal at a small wedding.</p>
+    </div>
+    <textarea id="f-no-rehearsal-plan" style="margin-top:8px" placeholder="What is the plan if no formal rehearsal happens?"></textarea>
+  </div>
+</div>
+
+<div class="form-section">
+  <h3>Photography — when and what</h3>
+  <div class="alert-box alert-info" style="margin-bottom:1rem">
+    <strong>The central photography decision:</strong> Whether the couple does a first look before the ceremony determines the entire photo timeline. With a first look, most formal portraits happen before the ceremony and the couple can enjoy cocktail hour with guests. Without a first look, couple portraits happen during cocktail hour and guests entertain themselves for 45–60 minutes. <strong>Neither is wrong — but the decision must be made now</strong> so the photographer can build the shot timeline accordingly.
+  </div>
+  <div class="fq">
+    <label>Will there be a first look — bride and groom see each other before the ceremony?</label>
+    <p class="sublabel">A first look allows couple portraits, wedding party photos, and most family formals to happen before the ceremony. The tradeoff is giving up the traditional aisle reveal. Note: research consistently shows grooms still react emotionally at the aisle even after a first look.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="firstlook" value="yes"> Yes — first look before ceremony</label>
+      <label><input type="radio" name="firstlook" value="no"> No — traditional aisle reveal</label>
+      <label><input type="radio" name="firstlook" value="undecided"> Not decided</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>Photo shot list — which groupings do you want for formal portraits?</label>
+    <p class="sublabel">Industry guidance: limit formal groupings to ~15 or fewer. Each grouping takes 5 minutes. More than 15 will consume your entire portrait window. List every combination you want (example: bride + groom, full wedding party, bride + bridesmaids, groom + groomsmen, bride + her parents, groom + his parents, both families together...).</p>
+    <textarea id="f-shotlist" placeholder="List every formal portrait grouping you want captured..."></textarea>
+  </div>
+  <div class="fq">
+    <label>Do you want a sunset portrait session? (Idaho sunset June 13 ~9:15 pm)</label>
+    <p class="sublabel">Stepping away for 10–15 minutes during dinner or early dancing for golden hour portraits is one of the most recommended moves for summer weddings. Guests are occupied with food and conversation — they rarely notice the couple is gone briefly.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="sunset" value="yes"> Yes — want golden hour portraits</label>
+      <label><input type="radio" name="sunset" value="no"> No</label>
+      <label><input type="radio" name="sunset" value="maybe"> Maybe — ask photographer</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>Is there a designated family member to round up family for formal portraits?</label>
+    <p class="sublabel">This is the single most common cause of portrait delays. Without one person whose only job is gathering family groups, portraits run 15–20 minutes over. Assign a specific person — not the photographer.</p>
+    <input type="text" id="f-portrait-wrangler" placeholder="Name — their job is getting family members together quickly for each grouping">
+  </div>
+  <div class="fq">
+    <label>Is there anything off-limits for the photographer? (moments, people, or locations)</label>
+    <textarea id="f-photo-limits" placeholder="Anyone who does not want to be photographed, any moments that are private, any areas of the venue that are restricted..."></textarea>
+  </div>
+</div>
+
+<div class="form-section">
+  <h3>Guest experience during portraits — cocktail hour plan</h3>
+  <div class="alert-box alert-info" style="margin-bottom:1rem">
+    <strong>The cocktail hour reality check:</strong> If there is no first look, guests will be on their own for 45–60 minutes after the ceremony while portraits are taken. With a first look, guests have 30–45 minutes of cocktail hour. Either way, guests need something to do beyond standing with a drink. For a small 50-person wedding without a DJ or coordinator, the key is having 1–2 activities that encourage mingling and feel intentional — not a full entertainment program.
+  </div>
+  <div class="fq">
+    <label>What will guests do during cocktail hour / portrait time?</label>
+    <p class="sublabel">Check all that apply. The bar, snacks, and music are the baseline. Activities are optional but strongly recommended if portraits will run longer than 30 minutes.</p>
+    <div class="checkbox-grid">
+      <label><input type="checkbox" id="g-bar"> Open bar</label>
+      <label><input type="checkbox" id="g-snacks"> Cocktail snacks on tables</label>
+      <label><input type="checkbox" id="g-music"> Background music playing</label>
+      <label><input type="checkbox" id="g-guestbook"> Guest book and photo table</label>
+      <label><input type="checkbox" id="g-jenga"> Giant Jenga</label>
+      <label><input type="checkbox" id="g-cornhole"> Cornhole</label>
+      <label><input type="checkbox" id="g-photobooth"> DIY photo booth or backdrop</label>
+      <label><input type="checkbox" id="g-disposable"> Disposable cameras on tables</label>
+      <label><input type="checkbox" id="g-trivia"> Wedding trivia cards on tables</label>
+      <label><input type="checkbox" id="g-bocce"> Bocce ball or other lawn game</label>
+      <label><input type="checkbox" id="g-smores"> S'mores station (if outdoor space)</label>
+      <label><input type="checkbox" id="g-dessert"> Dessert table open early</label>
+    </div>
+    <div class="info-box" style="margin-top:10px">
+      <p><strong>Practical recommendations for this wedding:</strong></p>
+      <ul class="example-list">
+        <li><strong>Best low-effort, high-impact option:</strong> Giant Jenga or cornhole plus snacks. Lawn games rent as a package for $150–$400, require no setup expertise, work for all ages, and give guests a natural conversation starter.</li>
+        <li><strong>Best zero-cost option:</strong> Wedding trivia cards printed at home — questions about the couple that guests fill out and drop in a box. Winner announced at dinner. Creates conversation and gives guests something to do at their seats.</li>
+        <li><strong>Best keepsake option:</strong> Disposable cameras on tables. Guests take candid photos all evening. Developed after the wedding for a second set of informal images the photographer did not capture.</li>
+        <li><strong>DIY photo booth:</strong> A decorated backdrop (a doorway with flowers, a banner, a blank wall) and a sign with a wedding hashtag or message. Guests take photos on their own phones. Costs almost nothing.</li>
+        <li><strong>If outdoors:</strong> S'mores station with a fire pit and a kit ($1.50–$2.00 per guest) — one of the most memorable and photographable additions for a summer Idaho evening.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="fq"><label>Who sets up any cocktail hour activities and when?</label><input type="text" id="f-activity-setup" placeholder="Name and time — activities should be in place by 1:30 pm before guests arrive"></div>
+  <div class="fq"><label>Will the dessert table be open during cocktail hour or only after dinner?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="desserttiming" value="cocktail"> Open during cocktail hour</label>
+      <label><input type="radio" name="desserttiming" value="dinner"> After dinner only</label>
+      <label><input type="radio" name="desserttiming" value="both"> Both / all evening</label>
+    </div>
+  </div>
+  <div class="fq"><label>Will the couple make a brief appearance during cocktail hour before portraits are complete?</label>
+    <p class="sublabel">Even 10 minutes with guests during cocktail hour — a quick hello and a drink together — significantly improves guest experience and gives guests a moment with the couple before the formal reception begins.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="cocktailappear" value="yes"> Yes, if timing allows</label>
+      <label><input type="radio" name="cocktailappear" value="no"> No — portraits take priority</label>
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <h3>Music and audio</h3>
+  <div class="fq">
+    <label>Who is providing the sound system?</label>
+    <p class="sublabel">The venue has no audio equipment. Father of the groom or a rental must fill this gap. The equipment must be tested at the venue with the actual jump drive before June 13.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="sound" value="fatherofgroom"> Father of the groom</label>
+      <label><input type="radio" name="sound" value="rental"> Rental</label>
+      <label><input type="radio" name="sound" value="other"> Someone else</label>
+      <label><input type="radio" name="sound" value="unknown"> Not decided</label>
+    </div>
+  </div>
+  <div class="fq"><label>If someone else — who and what equipment?</label><input type="text" id="f-soundwho" placeholder="Name and equipment description"></div>
+  <div class="fq">
+    <label>Wireless microphones for officiant and speakers?</label>
+    <p class="sublabel">Depends on room acoustics. Visit or call the venue. In a small room with 50 guests, mics may not be needed — but this must be confirmed, not assumed.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="mics" value="yes"> Yes</label>
+      <label><input type="radio" name="mics" value="no"> No — room is small enough</label>
+      <label><input type="radio" name="mics" value="unsure"> Need to check venue acoustics</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>Who operates the music for the entire day?</label>
+    <p class="sublabel">Full-day role. This person must stay at the sound source at every transition. Cannot be the bride, groom, or day-of point person.</p>
+    <input type="text" id="f-musicop" placeholder="Name">
+  </div>
+  <div class="fq"><label>Do-not-play list</label><textarea id="f-dnp" placeholder="Songs or genres you do not want played under any circumstances..."></textarea></div>
+  <div class="fq-grid">
+    <div class="fq"><label>Processional song</label><input type="text" id="f-processional" placeholder="Title and artist"></div>
+    <div class="fq"><label>Recessional song</label><input type="text" id="f-recessional" placeholder="Title and artist"></div>
+    <div class="fq"><label>Cocktail hour music vibe</label><input type="text" id="f-cocktailmusic" placeholder="Genre, mood, or specific artists"></div>
+    <div class="fq"><label>Dinner background music</label><input type="text" id="f-dinnermusic" placeholder="Genre or vibe — quieter than cocktail"></div>
+  </div>
+  <div class="fq"><label>Last song of the night</label><input type="text" id="f-lastsong" placeholder="Title and artist"></div>
+</div>
+
+<div class="form-section">
+  <h3>Dances</h3>
+  <div class="fq">
+    <label>First dance?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="firstdance" value="yes"> Yes</label>
+      <label><input type="radio" name="firstdance" value="no"> No</label>
+      <label><input type="radio" name="firstdance" value="maybe"> Not decided</label>
+    </div>
+  </div>
+  <div class="fq-grid">
+    <div class="fq"><label>First dance song</label><input type="text" id="f-fd-song" placeholder="Title and artist"></div>
+    <div class="fq"><label>Full song or fade at ~2 minutes?</label>
+      <div class="radio-group" style="margin-top:8px">
+        <label><input type="radio" name="fdfade" value="full"> Full song</label>
+        <label><input type="radio" name="fdfade" value="fade"> Fade at ~2 min</label>
+      </div>
+    </div>
+  </div>
+  <div class="fq">
+    <label>Father-daughter dance?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="fdd" value="yes"> Yes</label>
+      <label><input type="radio" name="fdd" value="no"> No</label>
+      <label><input type="radio" name="fdd" value="maybe"> Not decided</label>
+    </div>
+  </div>
+  <div class="fq-grid">
+    <div class="fq"><label>Father-daughter song</label><input type="text" id="f-fdd-song" placeholder="Title and artist"></div>
+    <div class="fq"><label>Dancer if not the father</label><input type="text" id="f-fdd-who" placeholder="Name and relationship"></div>
+  </div>
+  <div class="fq">
+    <label>Mother-son dance?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="msd" value="yes"> Yes</label>
+      <label><input type="radio" name="msd" value="no"> No</label>
+      <label><input type="radio" name="msd" value="maybe"> Not decided</label>
+    </div>
+  </div>
+  <div class="fq-grid">
+    <div class="fq"><label>Mother-son song</label><input type="text" id="f-msd-song" placeholder="Title and artist"></div>
+    <div class="fq"><label>Dancer if not the mother</label><input type="text" id="f-msd-who" placeholder="Name and relationship"></div>
+  </div>
+  <div class="fq"><label>Any other special dances or announced moments?</label><input type="text" id="f-otherdance" placeholder="Anniversary dance, group song, dollar dance..."></div>
+</div>
+
+<div class="form-section">
+  <h3>Speeches and toasts</h3>
+  <div class="fq">
+    <label>Who is speaking, in what order, and what is their relationship to the couple?</label>
+    <textarea id="f-speeches" placeholder="Example: 1. Best man (John, groom's brother) — 2. Maid of honor (Sarah) — 3. Father of the bride (Mike)..."></textarea>
+  </div>
+  <div class="fq">
+    <label>Time limit per speaker</label>
+    <div class="radio-group">
+      <label><input type="radio" name="timelimit" value="3min"> 3 minutes</label>
+      <label><input type="radio" name="timelimit" value="5min"> 5 minutes</label>
+      <label><input type="radio" name="timelimit" value="none"> No limit</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>Will speakers need a microphone?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="speechmic" value="yes"> Yes</label>
+      <label><input type="radio" name="speechmic" value="no"> No</label>
+      <label><input type="radio" name="speechmic" value="depends"> Depends on mic decision</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>Who is the emcee / announcer for the reception?</label>
+    <p class="sublabel">This person announces the grand entrance, introduces speakers, calls each dance, announces dinner and cake cutting, and closes the night. Must have a printed run-of-show in advance.</p>
+    <input type="text" id="f-emcee" placeholder="Name">
+  </div>
+</div>
+
+<div class="form-section">
+  <h3>Food and serviceware</h3>
+  <div class="fq">
+    <label>Is pizza and the dessert table the complete food plan for the full 8-hour event?</label>
+    <p class="sublabel">Guests arrive at 2:00 pm. Pizza is not until ~5:30 pm — 3.5 hours with an open bar and no food. Cocktail hour snacks are strongly recommended.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="foodplan" value="yes"> Yes, that is the full plan</label>
+      <label><input type="radio" name="foodplan" value="no"> No — more planned</label>
+      <label><input type="radio" name="foodplan" value="unsure"> Not decided</label>
+    </div>
+  </div>
+  <div class="fq"><label>If more food is planned — what and when?</label><textarea id="f-extrafood" placeholder="Example: store-bought charcuterie and chips set out during cocktail hour by maid of honor..."></textarea></div>
+  <div class="fq"><label>Pizza details — vendor, quantity, delivery or pickup, arrival time</label><textarea id="f-pizza" placeholder="~12–15 large pizzas for 50 guests. Must arrive no earlier than 30 min before dinner. No refrigerator at venue."></textarea></div>
+  <div class="fq"><label>Dessert table — source, who picks up, and when</label><textarea id="f-dessert" placeholder="Bakery or homemade, who picks up, when, and who sets up at venue with bride's plates and serving utensils..."></textarea></div>
+  <div class="fq"><label>Dinner plates, napkins, and utensils for pizza service — who provides what</label><input type="text" id="f-plates" placeholder="55+ plates, 55+ utensil sets, 100+ napkins — real, rental, or quality disposables"></div>
+  <div class="fq"><label>Dessert serviceware — who provides napkins and serving utensils for dessert table</label><input type="text" id="f-dessertware" placeholder="Bride has dessert plates confirmed — napkins and serving utensils still needed"></div>
+  <div class="fq"><label>Dietary restrictions or allergies among guests</label><input type="text" id="f-dietary" placeholder="Gluten free, vegetarian, nut allergy — confirm pizza options cover them or plan an alternative"></div>
+</div>
+
+<div class="form-section">
+  <h3>Water and non-alcoholic beverages</h3>
+  <div class="info-box" style="margin-bottom:1rem">
+    <p><strong>Quantities for 50 guests over 8 hours with open bar and summer heat:</strong></p>
+    <ul class="example-list">
+      <li><strong>Water:</strong> Plan for 3–4 bottles (16.9 oz) per guest, or ~200 bottles total. For a warm June day in Idaho, lean toward 4 per person. Buy in bulk at Costco or Sam's Club (~$4–5 per 40-pack).</li>
+      <li><strong>Soft drinks (soda/sparkling):</strong> ~26 liters or 74 cans for 50 guests over 8 hours. Include cola, diet cola, and lemon-lime at minimum. These also serve as bar mixers.</li>
+      <li><strong>Ice:</strong> Approximately 1–1.5 lbs per guest for beverages alone = 50–75 lbs. Add more if keeping drinks cold in coolers. Buy day-before or morning-of to prevent melting.</li>
+      <li><strong>Pitchers or dispensers:</strong> 2–3 large pitchers or a water dispenser on each table. Refillable dispensers are more eco-friendly than individual bottles and look better on tables.</li>
+      <li><strong>Cups:</strong> 100+ cups minimum — guests lose cups, grab new ones, use multiple throughout the night. If the bar provides cups, confirm they cover non-alcoholic service too.</li>
+    </ul>
+  </div>
+  <div class="fq">
+    <label>How will water be served?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="watertype" value="bottles"> Individual bottles</label>
+      <label><input type="radio" name="watertype" value="pitchers"> Pitchers on tables</label>
+      <label><input type="radio" name="watertype" value="dispenser"> Water dispenser / cooler station</label>
+      <label><input type="radio" name="watertype" value="mixed"> Mix of the above</label>
+    </div>
+  </div>
+  <div class="fq"><label>Where will the water station be located?</label><input type="text" id="f-waterstation" placeholder="Specific location in the venue — accessible from both ceremony and reception areas"></div>
+  <div class="fq"><label>Who is purchasing the water and soft drinks, and when?</label><input type="text" id="f-waterpurchase" placeholder="Name, store, and when they shop — day before is ideal so ice can be added morning of"></div>
+  <div class="fq"><label>Who sets up the water and soft drink station during venue setup?</label><input type="text" id="f-watersetup" placeholder="Name — assigned to set up pitchers, open bottles, fill dispensers, stock cups"></div>
+  <div class="fq"><label>Who monitors and refills the water station during the event?</label><input type="text" id="f-watermonitor" placeholder="Name — checks every 30–45 min, refills pitchers, replaces ice, restocks cups"></div>
+  <div class="fq"><label>Who breaks down the water station at 10 pm?</label><input type="text" id="f-watertakedown" placeholder="Name — empties remaining bottles, removes pitchers, disposes of unused ice"></div>
+  <div class="fq"><label>Will you offer any other non-alcoholic options?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="nonalc" value="sodaonly"> Soft drinks only</label>
+      <label><input type="radio" name="nonalc" value="lemonade"> Lemonade or iced tea also</label>
+      <label><input type="radio" name="nonalc" value="mocktail"> Signature mocktail</label>
+      <label><input type="radio" name="nonalc" value="none"> Water only besides bar</label>
+    </div>
+  </div>
+  <div class="fq"><label>Does the bartender cover non-alcoholic drinks, or is that managed separately?</label>
+    <p class="sublabel">Confirm this with the bartender. If the bartender only handles alcohol, someone else must manage the soft drink and water service throughout the event.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="barcoversna" value="yes"> Bartender covers non-alcoholic too</label>
+      <label><input type="radio" name="barcoversna" value="no"> Managed separately</label>
+      <label><input type="radio" name="barcoversna" value="unsure"> Not confirmed yet</label>
+    </div>
+  </div>
+  <div class="fq"><label>Trash plan — bags, bins, and who manages during the event</label><input type="text" id="f-trash" placeholder="Does the venue provide bags and bins? Who manages trash mid-event and at 10 pm?"></div>
+</div>
+
+<div class="form-section">
+  <h3>Signage</h3>
+  <div class="fq">
+    <label>Which signs will be at the venue?</label>
+    <div class="checkbox-grid">
+      <label><input type="checkbox" id="s-welcome"> Welcome sign</label>
+      <label><input type="checkbox" id="s-dir"> Directional signs</label>
+      <label><input type="checkbox" id="s-parking"> Parking sign</label>
+      <label><input type="checkbox" id="s-restroom"> Restroom sign</label>
+      <label><input type="checkbox" id="s-reserved"> Reserved seating signs</label>
+      <label><input type="checkbox" id="s-bar"> Bar menu sign</label>
+      <label><input type="checkbox" id="s-food"> Food station sign</label>
+      <label><input type="checkbox" id="s-guestbook"> Guest book sign</label>
+      <label><input type="checkbox" id="s-dessert"> Dessert table sign</label>
+      <label><input type="checkbox" id="s-seating"> Seating chart</label>
+      <label><input type="checkbox" id="s-water"> Water station sign</label>
+      <label><input type="checkbox" id="s-activity"> Activity sign / instructions</label>
+    </div>
+    <p class="hint" style="margin-top:8px">Clean text on foam board with an easel is sufficient and costs very little. Signs reduce guest confusion and free up the point person from constantly answering directional questions.</p>
+  </div>
+  <div class="fq"><label>Who makes the signs and transports them to the venue?</label><input type="text" id="f-signwho" placeholder="Name"></div>
+</div>
+
+<div class="form-section">
+  <h3>Lighting</h3>
+  <div class="fq">
+    <label>Does the venue have adequate interior lighting for the full evening?</label>
+    <p class="sublabel">Idaho sunset June 13 is approximately 9:15 pm. The last 45 minutes of the event will be in the dark. Confirm interior lighting for dancing, outdoor areas, and parking.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="lighting" value="yes"> Yes, sufficient</label>
+      <label><input type="radio" name="lighting" value="no"> No — needs supplementing</label>
+      <label><input type="radio" name="lighting" value="unknown"> Not sure — need to check</label>
+    </div>
+  </div>
+  <div class="fq"><label>Decorative lighting — string lights, candles, lanterns?</label><input type="text" id="f-decolight" placeholder="What, where, and who sets it up during venue setup"></div>
+</div>
+
+<div class="form-section">
+  <h3>Logistics and people</h3>
+  <div class="fq">
+    <label>Day-of point person</label>
+    <p class="sublabel">Holds the printed timeline, receives all vendors, answers all questions, handles anything unexpected. Must not be the bride or groom.</p>
+    <input type="text" id="f-pp" placeholder="Name">
+  </div>
+  <div class="fq"><label>Setup lead — who and what time does venue access begin?</label><textarea id="f-setup" placeholder="Name(s) and venue access time. List specific assignments if known."></textarea></div>
+  <div class="fq"><label>Cleanup lead — who and what does the venue require at 10 pm?</label><textarea id="f-cleanup" placeholder="Name(s) and venue cleanup requirements — trash, table breakdown, chair stacking, what must be removed vs. left."></textarea></div>
+  <div class="fq"><label>Parking — where do guests park and how will they know?</label><input type="text" id="f-parking" placeholder="Location and whether a sign or pre-event instructions are planned"></div>
+  <div class="fq">
+    <label>Bride's second pair of shoes for the reception?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="shoes" value="yes"> Yes, packed</label>
+      <label><input type="radio" name="shoes" value="no"> Not planned</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>Wedding party gifts?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="gifts" value="yes"> Yes</label>
+      <label><input type="radio" name="gifts" value="no"> No</label>
+      <label><input type="radio" name="gifts" value="maybe"> Not decided</label>
+    </div>
+  </div>
+  <div class="fq"><label>If yes — who purchases, wraps, and distributes them?</label><input type="text" id="f-giftwho" placeholder="Name and plan — typically given at rehearsal or morning of"></div>
+  <div class="fq">
+    <label>Private couple moment planned after the ceremony?</label>
+    <p class="sublabel">A quiet 5–10 minutes together immediately after the ceremony is one of the most commonly cited favorite memories. Worth scheduling intentionally and protecting from interruption.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="moment" value="yes"> Yes — built into timeline</label>
+      <label><input type="radio" name="moment" value="no"> No</label>
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <h3>Flowers and boutonnieres</h3>
+  <div class="alert-box alert-info" style="margin-bottom:1rem">
+    <strong>Currently confirmed:</strong> The bride has made her own bouquet. No other flowers have been mentioned. This section covers everything else — groom and groomsmen boutonnieres, corsages for parents or grandmothers, ceremony flowers, and table centerpieces.
+  </div>
+  <div class="fq">
+    <label>Will the groom wear a boutonniere?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="groombouto" value="yes"> Yes</label>
+      <label><input type="radio" name="groombouto" value="no"> No</label>
+    </div>
+  </div>
+  <div class="fq">
+    <label>Will groomsmen wear boutonnieres?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="gmsbouto" value="yes"> Yes</label>
+      <label><input type="radio" name="gmsbouto" value="no"> No</label>
+    </div>
+  </div>
+  <div class="fq"><label>If yes — who is making or purchasing boutonnieres, and when?</label><input type="text" id="f-bouto" placeholder="Name, source (florist, DIY, grocery store), and when they are picked up or made"></div>
+  <div class="fq">
+    <label>Will mothers or grandmothers receive corsages?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="corsages" value="yes"> Yes</label>
+      <label><input type="radio" name="corsages" value="no"> No</label>
+    </div>
+  </div>
+  <div class="fq"><label>If yes — who receives corsages and who sources them?</label><input type="text" id="f-corsages" placeholder="Names and source"></div>
+  <div class="fq">
+    <label>Will bridesmaids carry bouquets?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="bmbouquets" value="yes"> Yes</label>
+      <label><input type="radio" name="bmbouquets" value="no"> No</label>
+    </div>
+  </div>
+  <div class="fq"><label>If yes — who makes or sources bridesmaid bouquets?</label><input type="text" id="f-bmbouquets" placeholder="Name, source, and pickup plan"></div>
+  <div class="fq"><label>Any ceremony flowers — aisle markers, arch, backdrop, or table arrangements?</label><input type="text" id="f-ceremonyflowers" placeholder="What, who sources, who sets up, and when"></div>
+  <div class="fq"><label>Reception table centerpieces or floral arrangements?</label><input type="text" id="f-centerpieces" placeholder="What, who sources, who sets up during venue setup"></div>
+</div>
+
+<div class="form-section">
+  <h3>Food for the wedding party before the ceremony</h3>
+  <div class="alert-box alert-info" style="margin-bottom:1rem">
+    <strong>Why this matters:</strong> Hair and makeup begins at 9:00 am and runs 4–5 hours. The ceremony starts at 2:00 pm. That is a 5-hour window before anyone eats at the reception. A lightheaded or irritable wedding party is entirely avoidable with simple pre-ceremony food.
+  </div>
+  <div class="fq">
+    <label>Is there a food plan for the bridal suite during getting ready?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="bridalfood" value="yes"> Yes</label>
+      <label><input type="radio" name="bridalfood" value="no"> No — not planned</label>
+    </div>
+  </div>
+  <div class="fq"><label>If yes — what food, who provides it, and when does it arrive?</label><textarea id="f-bridalfood" placeholder="Example: Maid of honor picks up bagels, fruit, and yogurt from the grocery store on the way to the venue. Arrives by 9:00 am. Water and juice also in the suite."></textarea></div>
+  <div class="fq">
+    <label>Is there a food plan for the groom and groomsmen at the nearby house?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="groomfood" value="yes"> Yes</label>
+      <label><input type="radio" name="groomfood" value="no"> No — not planned</label>
+    </div>
+  </div>
+  <div class="fq"><label>If yes — what and who handles it?</label><input type="text" id="f-groomfood" placeholder="Example: Groomsmen pick up sandwiches or cereal on their own — confirm they eat before arriving at the venue"></div>
+</div>
+
+<div class="form-section">
+  <h3>Making sure the couple eats at the reception</h3>
+  <div class="alert-box alert-info" style="margin-bottom:1rem">
+    <strong>This is one of the most consistently forgotten details at weddings.</strong> Couples are pulled in every direction during dinner service and often do not eat despite being the ones who ordered the food. A named person whose job is to bring the bride and groom a plate is a simple fix.
+  </div>
+  <div class="fq">
+    <label>Who is responsible for making sure the bride and groom eat at dinner?</label>
+    <input type="text" id="f-coupleeat" placeholder="Name — their job is to bring the couple food when dinner is served and check in again later in the evening">
+  </div>
+  <div class="fq"><label>Are there any food or drink items the couple specifically wants saved for them? (e.g. specific pizza variety, a dessert item)</label><input type="text" id="f-couplefoodpref" placeholder="Any specific requests for the person responsible for the couple's food"></div>
+</div>
+
+<div class="form-section">
+  <h3>Vendor meals</h3>
+  <div class="alert-box alert-info" style="margin-bottom:1rem">
+    <strong>The photographer will be at this wedding for approximately 8–10 hours. The bartender for similar time.</strong> Vendors who do not eat make mistakes, lose energy, and occasionally have to leave briefly to find food. Setting aside a vendor meal — even just pizza and water — is standard practice and significantly appreciated.
+  </div>
+  <div class="fq">
+    <label>Will vendor meals be provided?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="vendormeals" value="yes"> Yes</label>
+      <label><input type="radio" name="vendormeals" value="no"> No</label>
+      <label><input type="radio" name="vendormeals" value="maybe"> Not decided</label>
+    </div>
+  </div>
+  <div class="fq"><label>If yes — what will they receive, when, and who coordinates it?</label><input type="text" id="f-vendormeals" placeholder="Example: Set aside 2–3 pizza slices and a bottle of water for photographer and bartender when dinner is served. Point person coordinates."></div>
+  <div class="fq"><label>Which vendors need meals? (Check with each vendor — some bring their own, some expect it to be provided)</label><input type="text" id="f-vendormealwho" placeholder="Confirm with photographer, bartender, and hair and makeup artist before June 13"></div>
+</div>
+
+<div class="form-section">
+  <h3>Cards, gifts, and gift management</h3>
+  <div class="fq">
+    <label>Will there be a card box or designated place for guests to leave cards and envelopes at the venue?</label>
+    <p class="sublabel">With 50 guests, cards and cash envelopes will arrive throughout the evening. Without a designated spot, they get scattered across tables or handed to the couple who then has no place to put them.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="cardbox" value="yes"> Yes — card box or basket planned</label>
+      <label><input type="radio" name="cardbox" value="no"> No — not planned</label>
+    </div>
+  </div>
+  <div class="fq"><label>Who is responsible for monitoring the card box and transporting it safely at the end of the night?</label><input type="text" id="f-cardbox" placeholder="Name — this person also does the end-of-night check to ensure no cards are left behind"></div>
+  <div class="fq"><label>Will the couple receive any physical gifts at the venue?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="gifts-at-venue" value="yes"> Yes — a gift table is planned</label>
+      <label><input type="radio" name="gifts-at-venue" value="registry-only"> Registry only — no physical gifts expected</label>
+      <label><input type="radio" name="gifts-at-venue" value="unsure"> Not sure</label>
+    </div>
+  </div>
+  <div class="fq"><label>Who loads gifts and cards into a car at the end of the night?</label><input type="text" id="f-giftload" placeholder="Name — designate before June 13 so this does not get forgotten during the 10 pm rush"></div>
+</div>
+
+<div class="form-section">
+  <h3>ADA accessibility</h3>
+  <div class="fq">
+    <label>Are there any guests with mobility limitations, wheelchairs, or other accessibility needs?</label>
+    <p class="sublabel">The venue has two small indoor rooms and a bridal suite upstairs. If the ceremony is outdoors, surface conditions matter. Confirm the venue can accommodate any guests with mobility needs before June 13.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="ada" value="yes"> Yes — confirm venue accessibility</label>
+      <label><input type="radio" name="ada" value="no"> No known accessibility needs</label>
+      <label><input type="radio" name="ada" value="unknown"> Not sure — should check with guests</label>
+    </div>
+  </div>
+  <div class="fq"><label>If yes — what accommodations are needed and has the venue confirmed they can support them?</label><textarea id="f-ada" placeholder="Describe the need and what the venue has confirmed — wheelchair access, seating near an aisle, accessible restroom location..."></textarea></div>
+</div>
+
+<div class="form-section">
+  <h3>Wedding website and guest communications</h3>
+  <div class="fq">
+    <label>Is there a wedding website where guests can find venue address, parking, hotel, and day-of details?</label>
+    <p class="sublabel">With out-of-town guests in a room block and no coordinator managing guest communications, a simple free wedding website centralizes everything. Free options include The Knot, Zola, and Joy. A Google Doc shared via link works just as well for a small wedding.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="weddingwebsite" value="yes"> Yes</label>
+      <label><input type="radio" name="weddingwebsite" value="no"> No</label>
+      <label><input type="radio" name="weddingwebsite" value="grouptext"> Group text or email instead</label>
+    </div>
+  </div>
+  <div class="fq"><label>Website URL or communication plan for guests</label><input type="text" id="f-website" placeholder="URL, or describe how guests are being informed of venue address, parking, and hotel details"></div>
+  <div class="fq"><label>Have all guests received: venue address, parking location, hotel details, and a day-of contact number?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="guestinfo" value="yes"> Yes, all communicated</label>
+      <label><input type="radio" name="guestinfo" value="partial"> Partially — some gaps remain</label>
+      <label><input type="radio" name="guestinfo" value="no"> Not yet</label>
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <h3>Guest transportation and rideshare</h3>
+  <div class="fq">
+    <label>How will guests who have been drinking get back to the hotel safely?</label>
+    <p class="sublabel">With an 8-hour open bar event in a potentially rural Idaho location, rideshare availability cannot be assumed. Uber and Lyft coverage is limited or nonexistent in many Idaho towns. This is a genuine safety question that needs a concrete answer before June 13.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="rideshare" value="rideshare"> Rideshare is available and reliable in this area</label>
+      <label><input type="radio" name="rideshare" value="shuttle"> Shuttle or arranged transportation</label>
+      <label><input type="radio" name="rideshare" value="walking"> Hotel is walking distance</label>
+      <label><input type="radio" name="rideshare" value="designated"> Designated drivers planned</label>
+      <label><input type="radio" name="rideshare" value="unknown"> Not yet confirmed — needs research</label>
+    </div>
+  </div>
+  <div class="fq"><label>Transportation plan details — how guests get home safely</label><textarea id="f-transport" placeholder="Confirm rideshare availability in this specific Idaho location. If limited, identify the backup plan: shuttle, designated driver list, or walkable hotel distance."></textarea></div>
+  <div class="fq"><label>Will guests be informed of the transportation plan before June 13?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="transportinfo" value="yes"> Yes — included in website or group message</label>
+      <label><input type="radio" name="transportinfo" value="no"> No — they will figure it out</label>
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <h3>Weather plan and morning-of check</h3>
+  <div class="fq">
+    <label>Will someone check the weather forecast the morning of June 13?</label>
+    <p class="sublabel">Idaho June weather can include heat, afternoon thunderstorms, or unexpected wind. If any part of the event is outdoors — ceremony, cocktail hour, or activities — the point person should check the forecast by 7:00 am and have a contingency ready.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="weathercheck" value="yes"> Yes — point person checks and adjusts if needed</label>
+      <label><input type="radio" name="weathercheck" value="no"> No — not planning for weather</label>
+    </div>
+  </div>
+  <div class="fq"><label>What is the backup plan if the outdoor ceremony space is unusable?</label><input type="text" id="f-weatherbackup" placeholder="If outdoors: where do 50 guests go if it is too hot, windy, or raining? Identify the indoor overflow plan now, not on the day."></div>
+  <div class="fq"><label>Heat mitigation plan for a warm June Idaho day</label><input type="text" id="f-heat" placeholder="Example: handheld fans at ceremony seats, shade available, water station positioned near ceremony area, guests notified to dress appropriately..."></div>
+</div>
+
+<div class="form-section">
+  <h3>End-of-night venue sweep</h3>
+  <div class="fq">
+    <label>Who is responsible for doing a sweep of all rooms before the couple leaves — bridal suite, restrooms, outdoor areas, and ceremony space?</label>
+    <p class="sublabel">This is separate from the cleanup lead role. The sweep is specifically about the couple's personal items: bouquet, vow books, cake topper if any, bride's bag, phone chargers, any décor the couple wants to keep. At 10 pm when the couple is exhausted, things get left behind.</p>
+    <input type="text" id="f-sweep" placeholder="Name — they check every room before the couple departs and have a checklist of items to look for">
+  </div>
+  <div class="fq"><label>List of specific items to check for during the end-of-night sweep</label><textarea id="f-sweeplist" placeholder="Bouquet, vow books, marriage license, cake knife and stand, bride's personal bag, phone chargers, any borrowed items, jewelry removed during the evening, gifts and cards, any rental items..."></textarea></div>
+</div>
+
+<div class="form-section">
+  <h3>Post-wedding tasks</h3>
+  <div class="fq">
+    <label>Who returns the signed marriage license to the county recorder?</label>
+    <p class="sublabel">Must be done within 30 days of June 13 per Idaho Code § 32-402. Can be mailed or dropped off in person. Keep a copy for the couple's records.</p>
+    <input type="text" id="f-licreturn" placeholder="Name">
+  </div>
+  <div class="fq"><label>Any rented items to return — what, due date, who returns them?</label><input type="text" id="f-rentreturn" placeholder="Sound equipment, furniture, lawn games, dishware..."></div>
+  <div class="fq"><label>Who sends vendor thank-you notes and by when?</label><input type="text" id="f-thankyou" placeholder="Name and target date — within two weeks is standard"></div>
+</div>
+
+<div class="form-section">
+  <h3>Anything else</h3>
+  <div class="fq"><label>Is there anything specific you want to happen that is not listed above?</label><textarea id="f-wantmore" placeholder="Special traditions, surprise moments, photographer requests, anything meaningful to you both..."></textarea></div>
+  <div class="fq"><label>Is there anything you definitely do not want to happen?</label><textarea id="f-dontwant" placeholder="Songs, traditions, activities, or moments you want explicitly excluded..."></textarea></div>
+</div>
+
+<div class="form-actions">
+  <button class="btn-primary" onclick="saveSession()">Save session</button>
+  <button class="btn-secondary" onclick="exportCSV()">Export to CSV</button>
+  <span class="save-confirm" id="form-confirm">Session saved.</span>
+</div>
+</div>
+
+<!-- ═══════════════ URGENT GAPS ═══════════════ -->
+<div id="tab-urgent" class="tab-content">
+  <div class="alert-box alert-urgent"><strong>Unresolved items that affect the day.</strong> Critical items require action this week. The wedding is approximately 6 weeks away.</div>
+  <div class="alert-box alert-info"><strong>Idaho law:</strong> Idaho Code § 32-303 requires a legally authorized officiant. Idaho Code § 32-402 requires the signed marriage license returned to the county within 30 days. Both parties must appear in person at the county recorder to obtain the license.</div>
+  <div class="sort-bar no-print">
+    <label>Filter by person:</label>
+    <select id="urgent-person-filter" onchange="renderUrgent()">
+      <option value="">All people</option>
+    </select>
+  </div>
+  <div id="urgent-list"></div>
+  <div class="export-row no-print"><span id="u-label"></span><button class="btn-secondary" onclick="exportCSV()">Export full plan to CSV</button></div>
+</div>
+
+<!-- ═══════════════ PRE-WEDDING ═══════════════ -->
+<div id="tab-pre" class="tab-content">
+  <div class="sort-bar no-print">
+    <label>Filter by person:</label>
+    <select id="pre-person-filter" onchange="renderPre()">
+      <option value="">All people</option>
+    </select>
+  </div>
+  <div class="filter-bar" id="pre-filters"></div>
+  <div id="pre-list"></div>
+  <div class="export-row no-print"><span id="p-label"></span><button class="btn-secondary" onclick="exportCSV()">Export full plan to CSV</button></div>
+</div>
+
+<!-- ═══════════════ TIMELINE ═══════════════ -->
+<div id="tab-tl" class="tab-content">
+  <div class="alert-box alert-info" style="margin-bottom:1rem">
+    <strong>Draft timeline with time estimates.</strong> Red dots are critical items. Amber dots need a decision. Use the Assigned to field on each block to override the default responsible person. Filter by person to see one person's day.
+  </div>
+  <div class="sort-bar no-print">
+    <label>Filter by person:</label>
+    <select id="tl-person-filter" onchange="renderTimeline()">
+      <option value="">All people</option>
+    </select>
+  </div>
+  <div id="tl-list"></div>
+</div>
+
+<!-- ═══════════════ PEOPLE ═══════════════ -->
+<div id="tab-people" class="tab-content">
+  <p style="font-size:13px;color:var(--warm-gray);margin-bottom:1rem;line-height:1.6">Enter names below. They populate the datalist suggestions across all task assignment fields. Save names, then go to each tab to assign tasks. Save session after entering names.</p>
+  <div class="people-grid" id="people-grid"></div>
+  <div style="display:flex;gap:8px;margin-bottom:2rem;flex-wrap:wrap">
+    <button class="btn-primary" onclick="saveNames()">Save names &amp; refresh suggestions</button>
+    <button class="btn-secondary" onclick="exportCSV()">Export full plan to CSV</button>
+  </div>
+  <p style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:0.75rem">Confirmed vendors</p>
+  <div id="vendor-list"></div>
+</div>
+
+<!-- ═══════════════ PRINT & SORT ═══════════════ -->
+<div id="tab-print" class="tab-content">
+  <div class="print-section">
+    <h3>Print full plan</h3>
+    <p style="font-size:13px;color:var(--warm-gray);margin-bottom:1rem;line-height:1.6">Opens a clean printer-ready page with all tasks and the complete day-of timeline. Check off items as tasks are completed. All assigned names and due dates are included.</p>
+    <div class="print-btn-row">
+      <button class="btn-primary" onclick="openPrintAll()">Open full plan for printing</button>
+      <button class="btn-secondary" onclick="openPrintTimeline()">Open day-of timeline only</button>
+    </div>
+    <p class="print-hint"><strong>To print:</strong> After the print window opens, press <strong>Ctrl+P</strong> (Windows / Linux) or <strong>Cmd+P</strong> (Mac). In the print dialog, set margins to Minimum or None for best results. "Print backgrounds" does not need to be checked — the print sheet is already black and white.</p>
+  </div>
+
+  <div class="print-section">
+    <h3>Print by person</h3>
+    <p style="font-size:13px;color:var(--warm-gray);margin-bottom:1rem;line-height:1.6">Select a person to generate their personalized task and timeline sheet — everything assigned to them, ready to hand off. Each sheet includes a header with their name, role, and the wedding date.</p>
+    <div class="sort-bar" style="margin-bottom:1rem">
+      <label>Select person:</label>
+      <select id="print-person-select">
+        <option value="">Choose a person…</option>
+      </select>
+    </div>
+    <div class="print-btn-row">
+      <button class="btn-primary" onclick="openPrintPerson()">Open this person's sheet</button>
+    </div>
+    <p class="print-hint"><strong>To print:</strong> Press <strong>Ctrl+P</strong> (Windows / Linux) or <strong>Cmd+P</strong> (Mac) after the window opens. Tip — generate one sheet per person and print them all before the rehearsal.</p>
+  </div>
+
+  <div class="print-section">
+    <h3>Sort and view by person</h3>
+    <p style="font-size:13px;color:var(--warm-gray);margin-bottom:1rem;line-height:1.6">Use the person filters on the Urgent Gaps, Before June 13, and Day-of Timeline tabs to view and check off tasks for one person at a time without leaving the app.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-secondary" onclick="showTab('urgent',null);document.querySelectorAll('.nav-tab')[1].classList.add('active');document.querySelectorAll('.nav-tab')[5].classList.remove('active')">Go to Urgent Gaps</button>
+      <button class="btn-secondary" onclick="showTab('pre',null);document.querySelectorAll('.nav-tab')[2].classList.add('active');document.querySelectorAll('.nav-tab')[5].classList.remove('active')">Go to Before June 13</button>
+      <button class="btn-secondary" onclick="showTab('tl',null);document.querySelectorAll('.nav-tab')[3].classList.add('active');document.querySelectorAll('.nav-tab')[5].classList.remove('active')">Go to Day-of Timeline</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const ROLES=[
+  {key:'bride',label:'Bride',name:''},{key:'groom',label:'Groom',name:''},
+  {key:'moh',label:'Maid of honor',name:''},{key:'bm',label:'Best man',name:''},
+  {key:'bm2',label:'Bridesmaid 2',name:''},{key:'bm3',label:'Bridesmaid 3',name:''},
+  {key:'gm1',label:'Groomsman 1',name:''},{key:'gm2',label:'Groomsman 2',name:''},
+  {key:'pp',label:'Day-of point person',name:''},{key:'emcee',label:'Emcee / announcer',name:''},
+  {key:'musicop',label:'Music operator',name:''},{key:'setup1',label:'Setup lead',name:''},
+  {key:'cleanup1',label:'Cleanup lead',name:''},{key:'wrangler',label:'Portrait wrangler',name:''},
+  {key:'family1',label:'Family helper 1',name:''},{key:'family2',label:'Family helper 2',name:''},
+];
+const VENDORS=[
+  {name:'Venue',note:'Bridal suite upstairs. Two small rooms (~30 seated). No kitchen or refrigerator. Groom house walking distance. Confirm setup access time.'},
+  {name:'Room block',note:'Confirm all out-of-town guests have hotel address, check-in details, and venue parking info.'},
+  {name:'Bartender',note:'Confirm: arrival time, what they bring vs. what must be provided (cups, ice, mixers, garnishes), whether they cover non-alcoholic service.'},
+  {name:'Photographer',note:'Confirm: arrival time (target 10:30–11:00 am), first look decision, shot list, family portrait wrangler name, sunset portrait preference.'},
+  {name:'Hair & makeup',note:'Confirm start time for bride + 3 bridesmaids — 4–5 hours minimum. Start no later than 9:00 am.'},
+];
+function rn(k){const r=ROLES.find(r=>r.key===k);return(r&&r.name)?r.name:(r?r.label:k);}
+
+const URGENT=[
+  {id:'u1',title:'Confirm officiant is hired and legally authorized — Idaho Code § 32-303',badge:'urgent',who:'bride',note:'If not yet hired: online ordination via AMM or ULC at no cost. Must be 18+. Must present the marriage license before the ceremony and return it signed within 30 days.'},
+  {id:'u2',title:'Obtain Idaho marriage license — both parties in person at the county recorder',badge:'urgent',who:'bride',note:'Photo ID and Social Security numbers required. Fee ~$28–$30. No waiting period. No expiration. Must be used within Idaho.'},
+  {id:'u3',title:'Make the first look decision — this determines the entire photography and portrait timeline',badge:'urgent',who:'bride',note:'With a first look: portraits happen before the ceremony and couple joins cocktail hour. Without: couple misses cocktail hour for portraits. Photographer cannot finalize their timeline without this decision.'},
+  {id:'u4',title:'Assign a day-of point person — one named person who is not the bride or groom',badge:'urgent',who:'pp',note:'Holds the timeline, receives all vendors, answers all questions, and handles anything unexpected. Without this role filled, the couple manages logistics on their own wedding day.'},
+  {id:'u5',title:'Confirm ceremony location and plan for all 50 guests',badge:'urgent',who:'pp',note:'Two indoor rooms hold ~30 seated. Plan for the additional 20+ guests: standing room, overflow, or outdoor ceremony. Heat plan required if outdoors.'},
+  {id:'u6',title:'Confirm who provides the sound system and schedule a test at the venue before June 13',badge:'urgent',who:'musicop',note:'Venue has no audio equipment. The actual jump drive must be tested on the actual speaker in the actual space. Do not assume USB or AUX compatibility without testing.'},
+  {id:'u7',title:'Decide whether wireless microphones are needed and rent if so',badge:'urgent',who:'pp',note:'Visit or call the venue to test acoustics. If yes, rent and train the operator before June 13.'},
+  {id:'u8',title:'Assign a music operator — present at the sound source for the entire day',badge:'urgent',who:'musicop',note:'Full-day role, separate from the point person. Must be at the sound source at every transition.'},
+  {id:'u9',title:'Assign an emcee for the reception',badge:'urgent',who:'emcee',note:'Without a DJ, someone must announce grand entrance, introduce speakers, call dances, announce dinner and cake cutting, and close the night.'},
+  {id:'u10',title:'Confirm dances — first dance, father-daughter, mother-son: yes or no for each, with songs',badge:'urgent',who:'bride',note:'Each dance needs a confirmed song and participant. Emcee and music operator both need this list in advance.'},
+  {id:'u11',title:'Decide on and plan rehearsal — who leads, who attends, when, and where',badge:'urgent',who:'pp',note:'20–30 min rehearsal covers only movement. One person must lead. The leader should be the same person cuing walkers on June 13. If no rehearsal, a written processional order must be distributed to all participants by June 11.'},
+  {id:'u12',title:'Assign a portrait wrangler — one person whose only job is gathering family groups for photos',badge:'urgent',who:'wrangler',note:'Without this role, family portraits run 15–20 minutes over. This person must have the full shot list and know every family member\'s name and face.'},
+  {id:'u13',title:'Plan cocktail hour food and at least one guest activity for the portrait window',badge:'urgent',who:'pp',note:'Guests are on their own for 30–60 min during portraits. Bar and music are the baseline. Add one activity: lawn games ($150–$400 rental), trivia cards (print at home, free), or disposable cameras (~$2/guest). Without something to do, guests cluster at the bar and the energy drops.'},
+  {id:'u14',title:'Source all water, soft drinks, and ice — confirm quantities, who purchases, and when',badge:'urgent',who:'setup1',note:'For 50 guests over 8 hours in summer heat: ~200 bottles of water (or equivalent in pitchers/dispensers), ~74 cans of soft drinks, 75+ lbs of ice. Purchase the day before. Assign setup, monitoring, and takedown to named people.'},
+  {id:'u15',title:'Source all serviceware — dinner plates, napkins, utensils, cups, serving utensils',badge:'urgent',who:'setup1',note:'55+ dinner plates, 55+ utensil sets, 100+ napkins, 100+ cups, pizza serving utensils, water pitchers. No kitchen or catering infrastructure at venue. Every item must be sourced, transported, and set up.'},
+  {id:'u16',title:'Confirm pizza logistics: vendor, quantity, arrival time, and who receives it',badge:'urgent',who:'pp',note:'No refrigerator. ~12–15 large pizzas for 50 guests. Must arrive no earlier than 30 min before dinner service.'},
+  {id:'u17',title:'Confirm cocktail hour snacks — who sources, picks up, and sets out',badge:'urgent',who:'moh',note:'Simple options: store-bought charcuterie board, chips and dip, fruit tray, mixed nuts. Set out before guests arrive at 1:30 pm.'},
+  {id:'u18',title:'Confirm all signage — who makes, transports, and places each sign',badge:'urgent',who:'setup1',note:'Minimum: welcome, directional, parking, restroom, reserved seating, bar menu, food station, guest book, dessert table, water station.'},
+  {id:'u19',title:'Plan for lighting after sunset (~9:15 pm on June 13)',badge:'urgent',who:'setup1',note:'Last 45 minutes of the event will be in the dark. Confirm interior lighting for dancing. Check parking and outdoor areas.'},
+  {id:'u20',title:'Confirm processional order and assign the cue person at the back of the ceremony space',badge:'urgent',who:'pp',note:'One person taps each walker at the right moment. Must be rehearsed. The cue person should be the same person who led the rehearsal.'},
+  {id:'u21',title:'Assign someone to secure the marriage license and ensure the officiant signs it immediately after the ceremony',badge:'urgent',who:'pp',note:'Idaho Code § 32-402 requires the signed license returned to the county within 30 days. Do not let this step get lost in the celebration.'},
+  {id:'u22',title:'Confirm boutonnieres for groom and groomsmen — source, who makes or buys, and when',badge:'urgent',who:'bride',note:'The bride made her bouquet. No other flowers have been planned. Boutonnieres for 1 groom and 3 groomsmen must be sourced. Options: florist, grocery store floral department, or DIY with fresh or dried flowers. Confirm pickup or completion date.'},
+  {id:'u23',title:'Plan pre-ceremony food for bridal suite and groom\'s house — 5 hours before anyone eats',badge:'urgent',who:'moh',note:'Hair and makeup begins at 9:00 am. Pizza is not until ~5:30 pm. That is an 8.5-hour window unless someone plans food for the getting-ready period and a light lunch. A lightheaded wedding party during vows is entirely avoidable.'},
+  {id:'u24',title:'Assign a named person whose job is making sure the bride and groom eat at dinner',badge:'urgent',who:'pp',note:'Couples consistently report not eating at their own reception. One named person brings the couple a plate when pizza arrives and checks in again mid-evening. Without this role, the couple often goes the whole night without eating.'},
+  {id:'u25',title:'Confirm vendor meal plan — photographer and bartender will be on site 8+ hours',badge:'urgent',who:'pp',note:'Check with each vendor whether they bring their own food or expect a meal to be provided. Setting aside pizza and water for vendors is standard courtesy and prevents energy and attention lapses at critical moments.'},
+  {id:'u26',title:'Source a card box or basket and assign a keeper for the evening',badge:'urgent',who:'setup1',note:'With 50 guests, cards and cash envelopes will arrive throughout the evening. Without a designated collection spot they scatter across tables or get handed to the couple with nowhere to go. Assign one person to monitor and transport the box safely at end of night.'},
+  {id:'u27',title:'Confirm ADA accessibility at the venue for any guests with mobility needs',badge:'urgent',who:'pp',note:'Venue has two small indoor rooms and an upstairs bridal suite. If any guest uses a wheelchair or has mobility limitations, confirm the ceremony space and restroom are accessible before June 13.'},
+  {id:'u28',title:'Confirm guest transportation — rideshare availability in this Idaho location is not guaranteed',badge:'urgent',who:'pp',note:'Uber and Lyft coverage is limited or nonexistent in many Idaho towns. With an 8-hour open bar event, guests need a concrete safe way home. Research rideshare availability now and identify a backup plan if coverage is insufficient.'},
+  {id:'u29',title:'Establish morning-of weather check and outdoor contingency plan',badge:'urgent',who:'pp',note:'Point person checks the June 13 forecast by 7:00 am. Idaho June can bring heat, afternoon thunderstorms, or wind. If any part of the event is outdoors, a contingency must be identified now — not on the day. Where do 50 guests go if the outdoor space is unusable?'},
+  {id:'u30',title:'Assign end-of-night sweep person with a checklist of items to find before the couple departs',badge:'urgent',who:'cleanup1',note:'This is separate from the cleanup lead. One person walks every room — bridal suite, restrooms, ceremony space, outdoor areas — checking for: bouquet, vow books, marriage license, cake knife and stand, bride\'s bag, phone chargers, gifts, cards, any borrowed or rental items.'},
+];
+
+const PRE_CATS=['legal','rehearsal','photo','vendor','audio','ceremony','food','bev','logistics','supplies','signage','flowers','post'];
+const PRE=[
+  {id:'p1',title:'Marriage license obtained from county recorder',badge:'legal',who:'bride',note:'Both parties in person. Photo ID and SSN. Mon–Fri business hours.'},
+  {id:'p2',title:'Officiant confirmed, authorized, and given ceremony script and marriage license before June 13',badge:'legal',who:'bride',note:'Idaho Code § 32-303.'},
+  {id:'p3',title:'Rehearsal completed — processional, positions, and recessional practiced',badge:'rehearsal',who:'pp',note:'20–30 min covering only movement. One clear leader. Same person cues walkers on June 13. If no rehearsal, written processional order distributed to all participants by June 11.'},
+  {id:'p4',title:'Written processional order distributed to every participant at least 2 days before',badge:'rehearsal',who:'pp',note:'Every wedding party member, the cue person, and the officiant receive a written copy.'},
+  {id:'p5',title:'First look decision made and photographer notified',badge:'photo',who:'bride',note:'First look = portraits before ceremony, couple joins cocktail hour. No first look = portraits during cocktail hour. Photographer cannot finalize timeline without this decision.'},
+  {id:'p6',title:'Formal portrait shot list finalized and given to photographer and portrait wrangler',badge:'photo',who:'bride',note:'Maximum ~15 groupings. Each takes ~5 minutes. List every specific combination wanted.'},
+  {id:'p7',title:'Portrait wrangler briefed — has shot list and knows every family member\'s face',badge:'photo',who:'wrangler',note:'Their only job is getting people together quickly. Brief them on the shot list before June 13.'},
+  {id:'p8',title:'Sunset portrait session decided and confirmed with photographer',badge:'photo',who:'bride',note:'Idaho sunset ~9:15 pm. 10–15 min session during dinner or early dancing. Best soft light of the day.'},
+  {id:'p9',title:'Photographer arrival time confirmed — target 10:30–11:00 am',badge:'vendor',who:'bride',note:'Arrive before the final stages of getting ready for detail shots and candid morning photos.'},
+  {id:'p10',title:'Bartender arrival time confirmed and bar setup plan agreed — including whether they cover non-alcoholic service',badge:'vendor',who:'pp',note:'Confirm what they provide vs. what must be sourced: cups, ice, mixers, garnishes. Confirm they know who to contact on June 13.'},
+  {id:'p11',title:'Hair & makeup start time confirmed — bride + 3 bridesmaids, start by 9:00 am',badge:'vendor',who:'bride',note:'4–5 hours minimum. Bride goes last. Snacks and water in the bridal suite.'},
+  {id:'p12',title:'Pizza order placed and confirmed',badge:'food',who:'pp',note:'Vendor, quantity, timing, receiving plan confirmed.'},
+  {id:'p13',title:'Cocktail hour snacks sourced and setup plan confirmed',badge:'food',who:'moh',note:'Who picks up, who sets out, which table, and when — must be ready before guests arrive at 1:30 pm.'},
+  {id:'p14',title:'Dessert table items sourced, pickup arranged, and setup plan confirmed',badge:'food',who:'moh',note:'Who picks up, when, and who sets up with bride\'s plates and serving utensils.'},
+  {id:'p15',title:'All serviceware sourced and transport to venue arranged',badge:'food',who:'setup1',note:'55+ dinner plates, 55+ utensil sets, 100+ napkins, 100+ cups, serving utensils, water pitchers. Buy 10–15% extra.'},
+  {id:'p16',title:'Dietary restrictions identified and confirmed covered by food plan',badge:'food',who:'bride',note:''},
+  {id:'p17',title:'Water and soft drinks purchased — quantities confirmed',badge:'bev',who:'setup1',note:'~200 bottles of water or equivalent, ~74 cans of soda for 50 guests over 8 summer hours. Buy day before.'},
+  {id:'p18',title:'Ice sourced — minimum 75 lbs, purchased morning of June 13',badge:'bev',who:'setup1',note:'Buy at a gas station, grocery store, or Costco the morning of. Do not buy the night before — it will melt.'},
+  {id:'p19',title:'Water station location confirmed and setup person assigned',badge:'bev',who:'setup1',note:'Pitchers, dispenser, or bottles — accessible from both ceremony and reception areas.'},
+  {id:'p20',title:'Water station monitor assigned for duration of event',badge:'bev',who:'family1',note:'Checks every 30–45 min. Refills pitchers. Replaces ice. Restocks cups. Confirms soft drinks are available.'},
+  {id:'p21',title:'Trash bags and disposal plan confirmed with venue',badge:'food',who:'cleanup1',note:'Does the venue provide bags and bins? Who manages trash mid-event and at 10 pm close.'},
+  {id:'p22',title:'Cocktail hour activity sourced, tested, and assigned for transport and setup',badge:'logistics',who:'setup1',note:'Lawn games, trivia cards, disposable cameras, photo booth backdrop, or s\'mores station. Must be set up before guests arrive at 1:30 pm.'},
+  {id:'p23',title:'Sound system at venue and tested with actual jump drive',badge:'audio',who:'musicop',note:'Full playlist test: processional, recessional, cocktail, dinner, each dance, open dancing, final song. Adjust volume in the ceremony space.'},
+  {id:'p24',title:'All playlists built and labeled on jump drive with written cue sheet for music operator',badge:'audio',who:'musicop',note:'Processional, recessional, cocktail, dinner, each dance, open dancing, final song.'},
+  {id:'p25',title:'Do-not-play list communicated to music operator',badge:'audio',who:'musicop',note:''},
+  {id:'p26',title:'Wireless mics rented and tested if needed',badge:'audio',who:'pp',note:'Confirm rental delivery date. Music operator trained.'},
+  {id:'p27',title:'Vows written or selected and in readable form for the altar',badge:'ceremony',who:'bride',note:'Vow books or printed cards prepared if writing own vows.'},
+  {id:'p28',title:'Ceremony programs printed and ready to be placed at seats if planned',badge:'ceremony',who:'bride',note:''},
+  {id:'p29',title:'Reserved seating plan confirmed and signs ready',badge:'ceremony',who:'pp',note:''},
+  {id:'p30',title:'Emcee has printed run-of-show with all announcements, timing, and speaker order',badge:'logistics',who:'emcee',note:'Grand entrance, toast order, dance sequence, dinner call, cake cutting, last dance, close.'},
+  {id:'p31',title:'Day-of point person briefed with printed timeline and all vendor phone numbers',badge:'logistics',who:'pp',note:'One printed sheet: every vendor name, phone number, and arrival time.'},
+  {id:'p32',title:'Printed timeline distributed to all vendors at least one week before June 13',badge:'logistics',who:'pp',note:'Every vendor knows their arrival time and who to contact on June 13.'},
+  {id:'p33',title:'Seating arrangement finalized and communicated to guests if assigned',badge:'logistics',who:'bride',note:''},
+  {id:'p34',title:'Parking plan confirmed and communicated to guests before June 13',badge:'logistics',who:'pp',note:''},
+  {id:'p35',title:'All signage made, confirmed, and assigned for transport and setup',badge:'signage',who:'setup1',note:'Welcome, directional, parking, restroom, reserved seating, bar menu, food station, guest book, dessert table, water station.'},
+  {id:'p36',title:'Lighting plan confirmed — interior and decorative',badge:'logistics',who:'setup1',note:'Sunset ~9:15 pm. Interior lighting for dancing confirmed. Decorative lighting set up and tested during setup.'},
+  {id:'p37',title:'Wedding party gifts purchased and transport arranged',badge:'supplies',who:'moh',note:'If happening — typically given at rehearsal or morning of.'},
+  {id:'p38',title:'Emergency kit assembled and assigned to a keeper',badge:'supplies',who:'moh',note:'Safety pins, fashion tape, stain remover, clear nail polish, pain reliever, antacid, band-aids, breath mints, bobby pins, needle and thread, spare earring backs, phone charger, mirror, hairspray.'},
+  {id:'p39',title:'Bride\'s second pair of shoes packed',badge:'supplies',who:'bride',note:'Eight hours in ceremony shoes. Foldable flats fit in a bridal clutch.'},
+  {id:'p40',title:'Rings confirmed and assigned to a keeper for June 13',badge:'supplies',who:'bm',note:'Best man holds groom\'s ring. Confirm who holds bride\'s ring.'},
+  {id:'p41',title:'Bride\'s day-of bag packed the night before',badge:'supplies',who:'bride',note:'Dress, shoes, jewelry, veil, accessories, marriage license, something borrowed and blue if planned.'},
+  {id:'p42',title:'Groom and groomsmen attire pressed and ready at the nearby house the night before',badge:'supplies',who:'groom',note:''},
+  {id:'p43',title:'Bride\'s supply box packed and transport assigned',badge:'supplies',who:'moh',note:'Cake tablecloth, stand, knife, dessert plates. Pack night before.'},
+  {id:'p44',title:'Tip envelopes prepared, labeled, and assigned to a distributor',badge:'supplies',who:'bm',note:'Bartender, photographer, hair and makeup, officiant (optional). Distributed at end of night.'},
+  {id:'p45',title:'Out-of-town guests confirmed in room block with venue address, parking, and point person number',badge:'logistics',who:'bride',note:''},
+  {id:'p46',title:'Assigned person to return signed marriage license to county within 30 days',badge:'post',who:'bride',note:'Idaho Code § 32-402. Keep a copy for the couple\'s records.'},
+  {id:'p47',title:'Rental return plan confirmed — items, due date, responsible person',badge:'post',who:'pp',note:'Sound equipment, lawn games, dishware, any rented items.'},
+  {id:'p48',title:'Vendor thank-you notes assigned with target send date',badge:'post',who:'bride',note:'Within two weeks of the wedding is standard.'},
+  {id:'p49',title:'Boutonnieres sourced for groom and groomsmen — pickup or completion confirmed',badge:'flowers',who:'bride',note:'Fresh or dried flowers from florist, grocery store floral, or DIY. Stored properly the night before. Assign who pins them on and when — typically during getting-ready photos before the ceremony.'},
+  {id:'p50',title:'Corsages sourced if planned for mothers or grandmothers',badge:'flowers',who:'bride',note:'Confirm recipients, source, pickup plan, and who distributes them on June 13.'},
+  {id:'p51',title:'Bridesmaid bouquets sourced and ready if planned',badge:'flowers',who:'bride',note:'Confirm source and pickup or delivery plan.'},
+  {id:'p52',title:'Ceremony flowers and table centerpieces sourced and setup plan confirmed',badge:'flowers',who:'setup1',note:'Who sources, who transports, and who sets up during venue setup window.'},
+  {id:'p53',title:'Pre-ceremony food plan confirmed for bridal suite and groom\'s house',badge:'food',who:'moh',note:'Simple options: bagels, fruit, yogurt, granola bars, sandwiches. Assign who picks up or brings food and confirm timing — must arrive before 9:00 am.'},
+  {id:'p54',title:'Person assigned to ensure bride and groom eat at dinner',badge:'food',who:'pp',note:'One named person brings the couple a plate when pizza arrives and checks in again mid-evening.'},
+  {id:'p55',title:'Vendor meal plan confirmed with each vendor',badge:'vendor',who:'pp',note:'Check with photographer and bartender before June 13 whether they bring their own food or expect a meal. Set aside food if needed.'},
+  {id:'p56',title:'Card box or basket sourced, set up at venue during setup, and keeper assigned',badge:'logistics',who:'setup1',note:'Placed on a visible table near the entrance or gift table. Keeper monitors it throughout the evening and transports it safely at end of night.'},
+  {id:'p57',title:'ADA accessibility confirmed with venue for any guests with mobility needs',badge:'logistics',who:'pp',note:'Confirm ceremony space, restroom, and bar are accessible. Identify accessible parking spot if needed.'},
+  {id:'p58',title:'Wedding website or guest communication confirmed — all guests have venue address, parking, hotel, and day-of contact',badge:'logistics',who:'bride',note:'Free options: The Knot, Zola, Joy, or a shared Google Doc. Include venue address, parking location, hotel name and address, and the point person\'s phone number for day-of questions.'},
+  {id:'p59',title:'Guest transportation and rideshare plan confirmed and communicated to guests',badge:'logistics',who:'pp',note:'Research rideshare availability in this specific Idaho location. If limited, communicate the backup plan to guests before June 13 — designated driver list, shuttle, or walkable hotel option.'},
+  {id:'p60',title:'Weather contingency confirmed — outdoor backup plan identified and point person briefed',badge:'logistics',who:'pp',note:'Point person checks forecast by 7:00 am on June 13. If outdoor ceremony or activities are planned, indoor overflow plan must be identified now. Heat mitigation plan (fans, shade, water) confirmed for a warm June Idaho day.'},
+  {id:'p61',title:'Getting-ready attire confirmed for bridal party photos — matching robes or coordinated look',badge:'supplies',who:'bride',note:'Photographer arrives at 10:30 am and will photograph the bridal party getting ready. Matching robes, silk slips, or coordinated attire photograph significantly better than random street clothes.'},
+  {id:'p62',title:'Dress bustle practiced by the person responsible — video recorded for reference',badge:'supplies',who:'moh',note:'If the dress has a bustle: the maid of honor or designated person practices before June 13 and records a short video so they remember the steps. A train being stepped on during the first dance is avoidable.'},
+  {id:'p63',title:'Grand entrance announcement wording confirmed and given to emcee in writing',badge:'logistics',who:'emcee',note:'Exact wording: Mr. and Mrs. [name], first names only, or custom. Written on the emcee run-of-show — not communicated verbally and trusted to memory.'},
+  {id:'p64',title:'First kiss discussed between bride and groom — length, whether to turn to guests',badge:'ceremony',who:'bride',note:'A brief conversation prevents a frozen awkward moment. Agree in advance so the moment feels natural in front of 50 guests.'},
+  {id:'p65',title:'End-of-night sweep person assigned with written checklist of items to find',badge:'logistics',who:'cleanup1',note:'Bouquet, vow books, marriage license, cake knife and stand, bride\'s bag, phone chargers, gifts, cards, borrowed items, rental items. This person walks every room before the couple departs.'},
+];
+
+const TIMELINE=[
+  {time:'7:00 am',dur:'5 min',title:'Point person checks June 13 weather forecast — adjusts any outdoor plans if needed',who:'pp',badge:'warning',note:'Check by 7:00 am so there is time to act before setup begins at 9:00 am. If outdoor ceremony or activities are planned and conditions are problematic (heat, storms, wind), activate the indoor contingency plan now.'},
+  {time:'9:00 am',dur:null,title:'Pre-ceremony food arrives at bridal suite — bagels, fruit, snacks, water',who:'moh',badge:'warning',note:'Assign the maid of honor or a family helper to bring food. Hair and makeup will run 4–5 hours. The ceremony is not until 2:00 pm. No one should be standing at the altar having not eaten since the night before.'},
+  {time:'9:00 am',dur:null,title:'Groom and groomsmen confirm they have food at the nearby house before getting ready',who:'groom',badge:'warning',note:'Simple plan: cereal, sandwiches, or a grocery run the morning of. Confirm before June 13 that someone is responsible for this.'},
+
+  {time:'9:00 am',dur:'ongoing',title:'Groom and groomsmen begin getting ready at the nearby house',who:'groom',badge:null,note:'Attire pressed and ready from the night before.'},
+  {time:'9:00 am',dur:'2–3 hrs',title:'Venue setup crew arrives and begins per assignment sheet',who:'setup1',badge:'warning',note:'Ceremony chairs and layout, cake table (tablecloth, stand, knife), dessert table, cocktail snack table, guest book table, bar area staging, decorations, sound system placement, signage, water station. Confirm venue access time in advance.'},
+  {time:'9:30 am',dur:'45–60 min',title:'Sound system set up and full playlist test completed at venue',who:'musicop',badge:'urgent',note:'Test the actual jump drive on the actual speaker in the ceremony space. Run: processional, recessional, cocktail, dinner, each dance, open dancing, final song. Adjust volume. Test wireless mics if in use.'},
+  {time:'9:30 am',dur:'30 min',title:'Decorative lighting set up and tested',who:'setup1',badge:'warning',note:'String lights, candles, lanterns if planned. All confirmed safe and stable before guests arrive.'},
+  {time:'10:00 am',dur:'30 min',title:'All signage placed throughout the venue',who:'setup1',badge:'warning',note:'Walk the full guest arrival path and confirm every transition is clearly marked: welcome, directional, parking, restroom, reserved seating, bar, food, guest book, dessert, water station.'},
+  {time:'10:30 am',dur:'60–90 min',title:'Photographer arrives at bridal suite — detail shots begin',who:'bride',badge:'warning',note:'Dress, rings, bouquet, invitation, shoes, jewelry. Candid getting-ready photos. Confirm this time with photographer before June 13.'},
+  {time:'10:30 am',dur:null,title:'IF FIRST LOOK: photographer photographs bride finishing getting ready, then sets up for first look location',who:'bride',badge:'warning',note:'First look typically happens 90 min before ceremony. At a 2:00 pm ceremony, first look would be around 12:00–12:30 pm. Confirm exact timing with photographer.'},
+  {time:'11:30 am',dur:'75–90 min',title:'Bride\'s hair and makeup begins',who:'bride',badge:null,note:'Allow 75–90 minutes. Do not schedule anything else in this window.'},
+  {time:'12:00 pm',dur:'30 min',title:'Bartender arrives and sets up bar area',who:'pp',badge:'warning',note:'Point person greets and directs. Bar fully set up before guests arrive at 1:30 pm.'},
+  {time:'12:00 pm',dur:'20 min',title:'Water station set up — pitchers filled, ice added, cups and soft drinks in place',who:'setup1',badge:'warning',note:'Important for a warm June day. Water accessible before guests arrive.'},
+  {time:'12:00 pm',dur:null,title:'IF FIRST LOOK: couple sees each other for first time — first look photos',who:'bride',badge:'warning',note:'~15 min for first look photos. Then couple portraits (30–45 min), then wedding party photos (30 min), then family formals (30 min). All complete by 1:30 pm if started by 12:00 pm.'},
+  {time:'12:30 pm',dur:'30–45 min',title:'IF FIRST LOOK: Couple portraits',who:'bride',badge:'warning',note:'Portrait wrangler is not needed for this block — just the couple and photographer.'},
+  {time:'1:00 pm',dur:'30 min',title:'IF FIRST LOOK: Wedding party photos — bridesmaids then groomsmen then full party',who:'moh',badge:'warning',note:'Wedding party should be ready and assembled by 1:00 pm. Groomsmen walk from nearby house.'},
+  {time:'1:00 pm',dur:'30 min',title:'IF FIRST LOOK: Family formal portraits',who:'wrangler',badge:'warning',note:'Portrait wrangler rounds up each family group per the shot list. Each grouping ~5 min. Maximum ~15 groupings. Complete by 1:30 pm.'},
+  {time:'1:00 pm',dur:null,title:'IF NO FIRST LOOK: Groom and groomsmen photos at nearby house — photographer sends second option or does bridal party separately',who:'groom',badge:'warning',note:'Bridesmaids can be photographed at the bridal suite while groomsmen are photographed at the house, if photographer or second shooter is available for both.'},
+  {time:'1:00 pm',dur:'10 min',title:'Boutonnieres pinned on groom and groomsmen — corsages given to mothers if planned',who:'moh',badge:'warning',note:'Do this before groom\'s side photos. Assign who pins them — typically the maid of honor or a bridesmaid. Straight pins should be included with purchased boutonnieres. Have a mirror available.'},
+  {time:'1:00 pm',dur:null,title:'Groom and groomsmen depart nearby house — walk to venue',who:'groom',badge:null,note:'Walking distance. Arrive by 1:10 pm.'},
+  {time:'1:10 pm',dur:'10 min',title:'Officiant arrives — reviews ceremony order and receives physical marriage license',who:'pp',badge:'urgent',note:'The marriage license must be in the officiant\'s hands before the ceremony begins. Point person confirms immediately on arrival.'},
+  {time:'1:15 pm',dur:'10 min',title:'Wireless mic sound check in ceremony space if in use',who:'musicop',badge:'warning',note:'Test with people in the space. Adjust levels. Confirm signal cue between officiant, point person, and music operator.'},
+  {time:'1:20 pm',dur:null,title:'Cocktail snacks set out on tables — accessible to early arrivals',who:'moh',badge:'warning',note:'Set out before guests begin arriving. Napkins and small plates available.'},
+  {time:'1:20 pm',dur:null,title:'Cocktail hour activity set up and ready — lawn games, trivia cards, or photo backdrop in position',who:'setup1',badge:'warning',note:'All activities in place and clearly visible before the first guest arrives.'},
+  {time:'1:20 pm',dur:null,title:'Music operator in position — processional music cued and ready',who:'musicop',badge:'urgent',note:'Confirm the cue signal: who tells the music operator to start the processional? Agree on the signal before guests arrive.'},
+  {time:'1:25 pm',dur:null,title:'Processional cue person in position at the back of the ceremony space',who:'pp',badge:'urgent',note:'Must know the exact processional sequence. Taps each person on the shoulder at the right moment. Must be calm and unhurried.'},
+  {time:'1:30 pm',dur:'30 min',title:'Greeter stationed at entrance — welcome guests and direct to ceremony seating',who:'family1',badge:null,note:'Guest book table accessible. Welcome music playing softly.'},
+  {time:'1:50 pm',dur:'10 min',title:'Point person does final headcount and signals officiant — all seated',who:'pp',badge:null,note:'All wedding party members in position. Signal music operator: processional begins in approximately 2 minutes.'},
+  {time:'2:00 pm',dur:'3–5 min',title:'Processional begins — groomsmen escort family to seats, then bridesmaids walk in order',who:'musicop',badge:null,note:'Each pair or individual spaced 20–30 feet apart. Walk slower than feels natural — this is the most commonly rushed moment. Music operator watches for the cue, not the clock.'},
+  {time:'2:05 pm',dur:'2–3 min',title:'Maid of honor walks, then bride with escort',who:'musicop',badge:null,note:'Bride\'s entrance typically has its own song. Music operator switches to bride\'s processional song on the cue signal. Officiant cues guests to rise.'},
+  {time:'2:08 pm',dur:'20–25 min',title:'Ceremony — vows, ring exchange, pronouncement',who:'bride',badge:null,note:'Civil ceremony runs 20–25 min. No rehearsal of vows needed at the rehearsal — only movement. Vow books or cards ready.'},
+  {time:'2:30 pm',dur:'2–3 min',title:'Recessional — bride and groom exit first, then wedding party pairs, then guests row by row',who:'musicop',badge:null,note:'Music operator starts recessional music immediately after the pronouncement and first kiss. Point person or usher dismisses guests row by row.'},
+  {time:'2:33 pm',dur:'5–10 min',title:'Private couple moment — bride and groom step away together before portraits begin',who:'bride',badge:'warning',note:'Intentional quiet time. Photographer may capture candid portraits nearby. Protect this moment from interruption. Commonly cited as couples\' favorite memory of the day.'},
+  {time:'2:35 pm',dur:'5 min',title:'Officiant signs marriage license — point person witnesses and secures it immediately',who:'pp',badge:'urgent',note:'Do this before the officiant mingles with guests or prepares to leave. Confirm officiant will return signed license to county within 30 days.'},
+  {time:'2:40 pm',dur:'15 min',title:'Guests move to reception area — cocktail music plays, bar opens, snacks and activities available',who:'pp',badge:null,note:'Point person or bridesmaid directs guests. Music operator shifts to cocktail playlist. Guests have open bar, snacks, background music, and any planned activities.'},
+  {time:'2:45 pm',dur:'20–30 min',title:'IF NO FIRST LOOK: Couple portraits — photographer works with couple while wedding party hosts cocktail hour',who:'bride',badge:'warning',note:'Guests are on their own for this window. Bar, snacks, music, and activities keep them engaged. Portrait wrangler stands by for family calls.'},
+  {time:'3:15 pm',dur:'30 min',title:'IF NO FIRST LOOK: Family formal portraits — portrait wrangler rounds up each grouping per shot list',who:'wrangler',badge:'warning',note:'Each grouping ~5 min. Maximum ~15 groupings. Portrait wrangler must be energetic and specific: "The Johnson family — Mike, Karen, and Tyler — please meet us at the door now." General announcements do not work.'},
+  {time:'3:45 pm',dur:null,title:'Portraits complete — couple rejoins cocktail hour or reception',who:'bride',badge:null,note:'If portraits finish earlier, the couple has time to mingle during cocktail hour. Even 10 minutes with guests before the reception begins significantly improves guest experience.'},
+  {time:'3:45 pm',dur:null,title:'Water station monitored — pitchers refilled, ice checked, cups restocked',who:'family1',badge:null,note:'First check-in on the water station. Refill as needed.'},
+  {time:'4:00 pm',dur:'5 min',title:'Point person confirms pizza ETA — calls vendor and confirms arrival window',who:'pp',badge:'urgent',note:'Receiver at venue entrance identified. Surface cleared and ready. Pizza must arrive no earlier than 30 min before dinner service.'},
+  {time:'4:30 pm',dur:null,title:'Emcee reviews full run-of-show with point person',who:'emcee',badge:null,note:'Confirm: grand entrance timing, dance sequence, toast order, dinner call, cake cutting time, last dance, close. Both people aligned.'},
+  {time:'4:45 pm',dur:'3–5 min',title:'Emcee announces grand entrance — music operator cues entrance song — estimated 3–5 min',who:'emcee',badge:'warning',note:'Guests gather near the entrance. Emcee: "Please welcome for the first time as husband and wife, [names]!" Couple enters to music. Energy moment — music should be a full song or at least 90 seconds before cutting.'},
+  {time:'4:50 pm',dur:'3–5 min',title:'First dance — if planned, estimated 2–5 min',who:'musicop',badge:'warning',note:'Emcee announces: "Please join us for the first dance as [names]." Music operator cues the confirmed song. Full song or fade at ~2 min — decide in advance and tell the music operator. Guests form a circle or remain seated.'},
+  {time:'4:55 pm',dur:'3–4 min',title:'Father-daughter dance — if planned, estimated 3–4 min',who:'musicop',badge:'warning',note:'Emcee announces: "We\'d now like to invite [bride\'s name] and her father [name] to share a special dance." If not happening, this block is removed from the run-of-show entirely — do not leave it as a placeholder.'},
+  {time:'5:00 pm',dur:'3–4 min',title:'Mother-son dance — if planned, estimated 3–4 min',who:'musicop',badge:'warning',note:'Emcee announces: "We\'d now like to invite [groom\'s name] and his mother [name] to the dance floor." Same note: if not happening, remove from run-of-show explicitly.'},
+  {time:'5:05 pm',dur:'2 min',title:'Emcee calls guests to dinner — music shifts to dinner background level',who:'emcee',badge:null,note:'Emcee: "Please find your seats — dinner will be served shortly." Music operator lowers volume to background level. Allow ~2 min for guests to settle.'},
+  {time:'5:15 pm',dur:null,title:'IF SUNSET PORTRAITS PLANNED: Photographer and couple identify golden hour window (~8:50–9:10 pm) and confirm plan',who:'bride',badge:'warning',note:'Photographer advises exact timing. Couple steps away for 10–15 min during dancing. Guests typically do not notice. Best soft natural light of the entire day.'},
+  {time:'5:30 pm',dur:'5 min',title:'Pizza arrives — receiver meets at entrance, set out immediately — no refrigerator, serve promptly',who:'pp',badge:'urgent',note:'Receiver meets delivery at entrance. Boxes opened and set on table immediately. Napkins, plates, and serving utensils already in place. Emcee or point person announces when food is ready.'},
+  {time:'5:32 pm',dur:null,title:'Vendor meals set aside — pizza and water for photographer and bartender',who:'pp',badge:'warning',note:'Before guests clear the pizza, set aside plates for vendors if that is the plan. Confirm with photographer and bartender in advance whether they expect a meal or bring their own.'},
+  {time:'5:35 pm',dur:null,title:'Designated person brings bride and groom their dinner plates',who:'family2',badge:'warning',note:'This person\'s specific job is making sure the couple eats. The couple will be pulled in every direction during dinner service. Without this role, they often go the entire evening without eating.'},
+  {time:'5:35 pm',dur:'2 min',title:'Emcee announces dinner is served — invites guests to the food',who:'emcee',badge:null,note:'Brief announcement: "Dinner is now served — please help yourselves." Point person or setup helper monitors the food table throughout dinner.'},
+  {time:'5:45 pm',dur:'15–25 min total',title:'Toasts and speeches begin — emcee introduces each speaker in order',who:'emcee',badge:'warning',note:'Emcee introduces each speaker with name and relationship: "Please welcome [name], [groom\'s] best man." 3–5 min per speaker. Emcee manages microphone handoff if in use. After last speaker, emcee thanks everyone and transitions to next event.'},
+  {time:'6:15 pm',dur:'5–8 min',title:'Cake cutting — emcee announces, photographer positioned, specific song cued if planned',who:'emcee',badge:null,note:'Emcee: "We\'d like to invite [names] to cut their wedding cake." Cake stand, knife, and tablecloth already on the table. Photographer in position before announcement. Music operator may cue a specific song — confirm in advance.'},
+  {time:'6:25 pm',dur:null,title:'Open dancing begins — music operator raises volume and shifts to dancing playlist',who:'musicop',badge:null,note:'Music operator must remain at the sound source for the next ~3 hours. Manages volume, transitions, song lengths, and any technical issues. The music operator cannot wander.'},
+  {time:'7:00 pm',dur:null,title:'Water station second check-in — pitchers refilled, ice replaced, cups restocked',who:'family1',badge:null,note:'Dancing increases dehydration. Water station should be full and visible.'},
+  {time:'8:00 pm',dur:null,title:'Point person checks in with couple — any adjustments needed',who:'pp',badge:null,note:'Music level, guest energy, vendor needs, anything unexpected. Remind cleanup lead of 10 pm responsibilities.'},
+  {time:'8:50 pm',dur:'10–15 min',title:'IF SUNSET PORTRAITS: Couple steps away for golden hour portraits',who:'bride',badge:'warning',note:'Idaho sunset ~9:15 pm. Golden hour light 8:50–9:10 pm. Photographer leads. Emcee or point person keeps the dance floor active in their absence. Most guests will not notice.'},
+  {time:'9:00 pm',dur:null,title:'Maid of honor begins collecting bride\'s items — cake stand, knife, tablecloth, personal bag',who:'moh',badge:null,note:'Load into car before the venue clears. Do not leave the cake knife or stand behind.'},
+  {time:'9:15 pm',dur:null,title:'Idaho sunset — point person confirms all lighting working for remaining event',who:'pp',badge:'warning',note:'Check interior dancing area, any outdoor space, and parking. Catch issues while ambient light remains.'},
+  {time:'9:30 pm',dur:'3 min',title:'Emcee announces last dance — invites all guests to the floor',who:'emcee',badge:null,note:'Emcee: "We\'re coming up on our final dance of the evening. Please join [names] on the dance floor for one last song." Music operator cues the confirmed final song.'},
+  {time:'9:50 pm',dur:'3–5 min',title:'Emcee gives warm close — thanks guests, wishes couple well, announces end of evening',who:'emcee',badge:null,note:'Brief and warm: "On behalf of [names], thank you all for being here tonight. The evening is coming to a close — please travel safely." Point person begins venue walkthrough: restrooms, bridal suite, outdoor spaces.'},
+  {time:'10:00 pm',dur:'30–45 min',title:'Cleanup crew begins venue breakdown per venue requirements',who:'cleanup1',badge:null,note:'Trash, table breakdown, chair stacking, linen collection, venue-specific requirements. All personal items and rental equipment removed. Cleanup lead directs — not the couple.'},
+  {time:'10:00 pm',dur:null,title:'Water station broken down — remaining water packed or discarded, pitchers washed or returned',who:'family1',badge:null,note:''},
+  {time:'10:00 pm',dur:null,title:'Tip envelopes distributed to vendors',who:'bm',badge:null,note:'Best man or point person: bartender, photographer (if present), hair and makeup, officiant.'},
+  {time:'10:00 pm',dur:null,title:'Marriage license confirmed signed and in couple\'s possession before leaving venue',who:'pp',badge:'urgent',note:'Final check before departure. Signed license is in hand. Officiant knows to return it to the county recorder within 30 days per Idaho Code § 32-402.'},
+  {time:'10:00 pm',dur:'10 min',title:'End-of-night venue sweep — every room checked before couple departs',who:'cleanup1',badge:'warning',note:'Walk: bridal suite, restrooms, ceremony space, outdoor areas. Check for: bouquet, vow books, marriage license, cake knife and stand, bride\'s bag, phone chargers, gifts, cards, borrowed items, rental items. Nothing gets left behind.'},
+];
+
+// ── State ──
+let checks={};
+let taskAssign={}; // {taskId: {who:'', due:''}}
+try{checks=JSON.parse(localStorage.getItem('wed-v6-checks')||'{}');}catch(e){}
+try{taskAssign=JSON.parse(localStorage.getItem('wed-v6-assign')||'{}');}catch(e){}
+
+function sc(id,val){checks[id]=val;try{localStorage.setItem('wed-v6-checks',JSON.stringify(checks));}catch(e){}upCounts();}
+function sa(id,field,val){
+  if(!taskAssign[id])taskAssign[id]={who:'',due:''};
+  taskAssign[id][field]=val;
+  try{localStorage.setItem('wed-v6-assign',JSON.stringify(taskAssign));}catch(e){}
+}
+function getAssign(id){return taskAssign[id]||{who:'',due:''};}
+
+function upCounts(){
+  const ud=URGENT.filter(t=>checks[t.id]).length;
+  const pd=PRE.filter(t=>checks[t.id]).length;
+  const ul=document.getElementById('u-label');if(ul)ul.textContent=ud+' of '+URGENT.length+' urgent items resolved';
+  const pl=document.getElementById('p-label');if(pl)pl.textContent=pd+' of '+PRE.length+' pre-wedding tasks done';
+}
+
+// ── Datalist & person filters ──
+function allNames(){
+  const names=[];
+  ROLES.forEach(r=>{if(r.name)names.push(r.name);});
+  // also pull any free-text names from taskAssign
+  Object.values(taskAssign).forEach(a=>{if(a.who&&!names.includes(a.who))names.push(a.who);});
+  return [...new Set(names)].filter(Boolean).sort();
+}
+
+function updatePersonFilters(){
+  const names=allNames();
+  ['urgent-person-filter','pre-person-filter','tl-person-filter','print-person-select'].forEach(selId=>{
+    const sel=document.getElementById(selId);if(!sel)return;
+    const cur=sel.value;
+    sel.innerHTML=selId==='print-person-select'
+      ?'<option value="">Choose a person…</option>'
+      :'<option value="">All people</option>';
+    names.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
+    if(cur)sel.value=cur;
+  });
+}
+
+function rebuildDatalist(){
+  let dl=document.getElementById('name-suggestions');
+  if(!dl){dl=document.createElement('datalist');dl.id='name-suggestions';document.body.appendChild(dl);}
+  dl.innerHTML='';
+  allNames().forEach(n=>{const o=document.createElement('option');o.value=n;dl.appendChild(o);});
+}
+
+// ── Time options for timeline ──
+function buildTimeOptions(selected){
+  const slots=[];
+  for(let h=7;h<=22;h++){[0,15,30,45].forEach(m=>{
+    const hh=h%12||12;const ampm=h<12?'am':'pm';
+    const mm=m===0?'00':m;
+    slots.push(`${hh}:${mm} ${ampm}`);
+  });}
+  return slots.map(s=>`<option value="${s}"${s===selected?' selected':''}/>`).join('');
+}
+
+// ── Badge HTML ──
+function bh(b){
+  if(!b)return'';
+  const m={urgent:['badge-urgent','Critical'],warning:['badge-warning','Needs decision'],legal:['badge-info','Legal'],rehearsal:['badge-neutral','Rehearsal'],photo:['badge-neutral','Photography'],vendor:['badge-neutral','Vendor'],audio:['badge-neutral','Audio'],ceremony:['badge-neutral','Ceremony'],food:['badge-neutral','Food'],bev:['badge-neutral','Beverages'],logistics:['badge-neutral','Logistics'],supplies:['badge-neutral','Supplies'],signage:['badge-neutral','Signage'],flowers:['badge-neutral','Flowers'],post:['badge-neutral','Post-wedding']};
+  const[cls,lbl]=m[b]||['badge-neutral',b];
+  return`<span class="badge ${cls}">${lbl}</span>`;
+}
+
+// ── Task card with assignment fields ──
+function mkTask(t,idO){
+  const id=idO||t.id;
+  const chk=!!checks[id];
+  const asgn=getAssign(id);
+  const defaultWho=rn(t.who);
+  const d=document.createElement('div');
+  d.className='task-card'+(chk?' done':'');
+  d.innerHTML=`<input type="checkbox" ${chk?'checked':''} onchange="sc('${id}',this.checked);this.closest('.task-card').classList.toggle('done',this.checked)">
+    <div class="task-body">
+      <div class="task-title">${t.title}</div>
+      <div class="task-meta">${bh(t.badge)}<span class="task-who" style="color:var(--sage-dark);font-size:11px">${asgn.who||defaultWho}</span></div>
+      ${t.note?`<div class="task-note">${t.note}</div>`:''}
+      <div class="task-assign-row no-print">
+        <span class="assign-label">Assigned to</span>
+        <input list="name-suggestions" value="${asgn.who||''}" placeholder="${defaultWho}" oninput="sa('${id}','who',this.value);this.closest('.task-card').querySelector('.task-who').textContent=this.value||'${defaultWho.replace(/'/g,"\\'")}';sa('${id}','who',this.value);rebuildDatalist();updatePersonFilters();" style="min-width:130px">
+        <span class="assign-label">Due</span>
+        <input type="text" class="due-input" value="${asgn.due||''}" placeholder="e.g. June 10, ASAP" oninput="sa('${id}','due',this.value)" style="min-width:110px">
+      </div>
+    </div>`;
+  return d;
+}
+
+// ── Render Urgent with person filter ──
+function renderUrgent(){
+  const c=document.getElementById('urgent-list');c.innerHTML='';
+  const pf=document.getElementById('urgent-person-filter')?.value||'';
+  let shown=URGENT;
+  if(pf)shown=URGENT.filter(t=>{
+    const a=getAssign(t.id);
+    const who=(a.who||rn(t.who)).toLowerCase();
+    return who===pf.toLowerCase();
+  });
+  shown.forEach(t=>c.appendChild(mkTask(t)));
+  upCounts();
+}
+
+// ── Pre-wedding filters ──
+let pf='all';
+function buildPreFilters(){
+  const c=document.getElementById('pre-filters');c.innerHTML='';
+  const cats=['all',...PRE_CATS,'done'];
+  const labels={all:'All',legal:'Legal',rehearsal:'Rehearsal',photo:'Photography',vendor:'Vendors',audio:'Audio',ceremony:'Ceremony',food:'Food',bev:'Beverages',logistics:'Logistics',supplies:'Supplies',signage:'Signage',flowers:'Flowers',post:'Post-wedding',done:'Done'};
+  cats.forEach(f=>{
+    const b=document.createElement('button');b.className='filter-btn'+(f==='all'?' active':'');
+    b.textContent=labels[f]||f;
+    b.onclick=()=>{pf=f;document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderPre();};
+    c.appendChild(b);
+  });
+}
+
+function renderPre(){
+  const c=document.getElementById('pre-list');c.innerHTML='';
+  const personF=document.getElementById('pre-person-filter')?.value||'';
+  let shown=PRE;
+  if(pf==='done')shown=PRE.filter(t=>checks[t.id]);
+  else if(pf!=='all')shown=PRE.filter(t=>t.badge===pf);
+  if(personF)shown=shown.filter(t=>{
+    const a=getAssign(t.id);
+    return(a.who||rn(t.who)).toLowerCase()===personF.toLowerCase();
+  });
+  shown.forEach(t=>c.appendChild(mkTask(t)));
+  upCounts();
+}
+
+// ── Timeline with assignment fields and person filter ──
+function renderTimeline(){
+  const c=document.getElementById('tl-list');c.innerHTML='';
+  const personF=document.getElementById('tl-person-filter')?.value||'';
+  let shown=TIMELINE.map((t,i)=>({t,i}));
+  if(personF)shown=shown.filter(({t,i})=>{
+    const id='tl'+i;const a=getAssign(id);
+    return(a.who||rn(t.who)).toLowerCase()===personF.toLowerCase();
+  });
+  shown.forEach(({t,i},idx)=>{
+    const id='tl'+i;const chk=!!checks[id];const isLast=idx===shown.length-1;
+    const asgn=getAssign(id);
+    const defaultWho=rn(t.who);
+    const displayWho=asgn.who||defaultWho;
+    const dc=t.badge==='urgent'?'urgent':(t.badge==='warning'?'warning':(chk?'done-dot':''));
+    const row=document.createElement('div');row.className='tl-row';
+
+    // Build time datalist options
+    const timeOpts=buildTimeOptions(asgn.time||t.time);
+
+    row.innerHTML=`<div class="tl-time">${asgn.time||t.time}</div>
+      <div class="tl-line"><div class="tl-dot ${dc}"></div>${isLast?'':'<div class="tl-conn"></div>'}</div>
+      <div class="tl-card${chk?' done':''}">
+        <div class="tl-title">
+          <input type="checkbox" ${chk?'checked':''} onchange="sc('${id}',this.checked);this.closest('.tl-card').classList.toggle('done',this.checked)">
+          <span style="flex:1">${t.title}</span>
+          ${bh(t.badge)}
+          <span class="tl-who-label" style="font-size:11px;color:var(--warm-gray);white-space:nowrap">${displayWho}</span>
+        </div>
+        ${t.dur?`<div class="tl-duration">Estimated: ${t.dur}</div>`:''}
+        ${t.note?`<div class="tl-note">${t.note}</div>`:''}
+        <div class="task-assign-row no-print">
+          <span class="assign-label">Time</span>
+          <input list="time-suggestions-${id}" value="${asgn.time||t.time}" placeholder="${t.time}"
+            oninput="sa('${id}','time',this.value);this.closest('.tl-row').querySelector('.tl-time').textContent=this.value||'${t.time}'"
+            style="min-width:80px">
+          <datalist id="time-suggestions-${id}">${timeOpts}</datalist>
+          <span class="assign-label">Assigned to</span>
+          <input list="name-suggestions" value="${asgn.who||''}" placeholder="${defaultWho}"
+            oninput="sa('${id}','who',this.value);this.closest('.tl-card').querySelector('.tl-who-label').textContent=this.value||'${defaultWho.replace(/'/g,"\\'")}';rebuildDatalist();updatePersonFilters();"
+            style="min-width:120px">
+        </div>
+      </div>`;
+    c.appendChild(row);
+  });
+}
+
+// ── People & roles ──
+function renderPeople(){
+  const g=document.getElementById('people-grid');g.innerHTML='';
+  ROLES.forEach(r=>{
+    const d=document.createElement('div');d.className='person-card';
+    d.innerHTML=`<input data-key="${r.key}" placeholder="Enter name" value="${r.name||''}" oninput="ROLES.find(x=>x.key==='${r.key}').name=this.value">
+      <div class="person-role">${r.label}</div>`;
+    g.appendChild(d);
+  });
+  const vl=document.getElementById('vendor-list');
+  vl.innerHTML=VENDORS.map(v=>`<div class="vendor-card"><div class="vendor-name">${v.name} <span class="badge badge-success" style="margin-left:6px">Confirmed</span></div>${v.note?`<div class="vendor-note">${v.note}</div>`:''}</div>`).join('');
+}
+
+function saveNames(){
+  document.querySelectorAll('.person-card input').forEach(inp=>{const r=ROLES.find(r=>r.key===inp.dataset.key);if(r)r.name=inp.value;});
+  rebuildDatalist();updatePersonFilters();renderAll();
+  const b=event.target;b.textContent='Saved!';setTimeout(()=>b.textContent='Save names & refresh suggestions',1500);
+}
+
+function showTab(tab,el){
+  document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(el)el.classList.add('active');
+}
+
+// ── Print functions ──
+function buildPrintCSS(){
+  return`<style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',Georgia,sans-serif;font-size:10.5pt;color:#1a1a18;padding:24pt 28pt;background:white}
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@400;500&display=swap');
+    h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;font-size:22pt;letter-spacing:0.04em;margin-bottom:2pt}
+    .subtitle{font-size:8.5pt;color:#6B6862;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14pt}
+    .header{text-align:center;border-bottom:1.5pt solid #2C2C2A;padding-bottom:10pt;margin-bottom:14pt}
+    .person-header{font-size:14pt;font-weight:500;margin:14pt 0 4pt;border-bottom:0.5pt solid #D8D4CE;padding-bottom:3pt;color:#2C2C2A}
+    .role-label{font-size:8pt;color:#8A9E8C;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8pt}
+    .cat-header{font-size:8pt;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:#6B6862;margin:9pt 0 3pt;padding-bottom:2pt;border-bottom:0.5pt solid #E8E5E0}
+    .task{display:flex;gap:6pt;padding:4pt 0;border-bottom:0.5pt solid #E8E5E0;page-break-inside:avoid}
+    .check{width:9pt;height:9pt;border:0.75pt solid #6B6862;border-radius:1pt;flex-shrink:0;margin-top:2pt}
+    .task-body{flex:1}
+    .task-title{font-size:10pt;line-height:1.35;color:#1a1a18}
+    .task-meta{font-size:7.5pt;color:#8A9E8C;margin-top:1.5pt}
+    .task-note{font-size:8.5pt;color:#6B6862;margin-top:2pt;font-style:italic;line-height:1.35}
+    .due-badge{display:inline-block;font-size:7.5pt;color:#5C7060;background:#EFF4F0;border:0.5pt solid #AECBB3;border-radius:10pt;padding:0 5pt;margin-left:4pt}
+    .tl-row{display:flex;gap:6pt;padding:4pt 0;border-bottom:0.5pt solid #E8E5E0;page-break-inside:avoid}
+    .tl-time{font-size:8.5pt;font-weight:500;min-width:50pt;color:#6B6862;padding-top:2pt}
+    .tl-body{flex:1}
+    .tl-title{font-size:10pt;line-height:1.35;color:#1a1a18}
+    .tl-meta{font-size:7.5pt;color:#8A9E8C;margin-top:1pt}
+    .tl-dur{font-size:7.5pt;color:#C4958A;margin-top:1pt}
+    .tl-note{font-size:8.5pt;color:#6B6862;margin-top:2pt;font-style:italic;line-height:1.35}
+    .page-break{page-break-before:always}
+    .print-tip{background:#f5f5f0;border:0.5pt solid #D8D4CE;border-radius:2pt;padding:6pt 10pt;margin-bottom:14pt;font-size:8.5pt;color:#6B6862}
+  </style>`;
+}
+
+function buildPrintHeader(subtitle){
+  return`<div class="header">
+    <h1>June 13, 2026 — Wedding Planner</h1>
+    <div class="subtitle">${subtitle}</div>
+  </div>
+  <div class="print-tip">Print tip: Press <strong>Ctrl+P</strong> (Windows) or <strong>Cmd+P</strong> (Mac) · Set margins to Minimum · Headers &amp; footers optional</div>`;
+}
+
+function taskPrintRow(t,id){
+  const chk=!!checks[id||t.id];
+  const asgn=getAssign(id||t.id);
+  const who=asgn.who||rn(t.who);
+  const due=asgn.due?`<span class="due-badge">${asgn.due}</span>`:'';
+  return`<div class="task">
+    <div class="check">${chk?'✓':''}</div>
+    <div class="task-body">
+      <div class="task-title">${t.title}${due}</div>
+      <div class="task-meta">Assigned: ${who}</div>
+      ${t.note?`<div class="task-note">${t.note}</div>`:''}
+    </div>
+  </div>`;
+}
+
+function tlPrintRow(t,i){
+  const id='tl'+i;const chk=!!checks[id];
+  const asgn=getAssign(id);
+  const who=asgn.who||rn(t.who);
+  const time=asgn.time||t.time;
+  return`<div class="tl-row">
+    <div class="tl-time">${time}</div>
+    <div class="tl-body">
+      <div class="tl-title">${t.title}</div>
+      <div class="tl-meta">Assigned: ${who}</div>
+      ${t.dur?`<div class="tl-dur">Est. duration: ${t.dur}</div>`:''}
+      ${t.note?`<div class="tl-note">${t.note}</div>`:''}
+    </div>
+  </div>`;
+}
+
+function openPrintAll(){
+  let html=`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>June 13 Wedding — Full Plan</title>${buildPrintCSS()}</head><body>`;
+  html+=buildPrintHeader('Complete planning document · Civil ceremony, Idaho · ~50 guests');
+
+  html+='<div class="cat-header">Urgent gaps</div>';
+  URGENT.forEach(t=>html+=taskPrintRow(t,t.id));
+
+  html+='<div class="cat-header" style="margin-top:14pt">Pre-wedding tasks</div>';
+  const cats=[...PRE_CATS];
+  cats.forEach(cat=>{
+    const items=PRE.filter(t=>t.badge===cat);
+    if(!items.length)return;
+    const labels={legal:'Legal',rehearsal:'Rehearsal',photo:'Photography',vendor:'Vendors',audio:'Audio',ceremony:'Ceremony',food:'Food',bev:'Beverages',logistics:'Logistics',supplies:'Supplies',signage:'Signage',flowers:'Flowers',post:'Post-wedding'};
+    html+=`<div class="cat-header">${labels[cat]||cat}</div>`;
+    items.forEach(t=>html+=taskPrintRow(t,t.id));
+  });
+
+  html+='<div class="page-break"></div>';
+  html+=buildPrintHeader('Day-of timeline · June 13, 2026');
+  html+='<div class="cat-header">Complete timeline — 7:00 am to 10:00 pm</div>';
+  TIMELINE.forEach((t,i)=>html+=tlPrintRow(t,i));
+
+  html+='</body></html>';
+  const w=window.open('','_blank');w.document.write(html);w.document.close();
+}
+
+function openPrintTimeline(){
+  let html=`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>June 13 Wedding — Day-of Timeline</title>${buildPrintCSS()}</head><body>`;
+  html+=buildPrintHeader('Day-of timeline · Civil ceremony, Idaho · 2:00 pm ceremony');
+  html+='<div class="cat-header">Complete timeline — 7:00 am to 10:00 pm</div>';
+  TIMELINE.forEach((t,i)=>html+=tlPrintRow(t,i));
+  html+='</body></html>';
+  const w=window.open('','_blank');w.document.write(html);w.document.close();
+}
+
+function openPrintPerson(){
+  const person=document.getElementById('print-person-select')?.value;
+  if(!person){alert('Please select a person first.');return;}
+
+  const urgentTasks=URGENT.filter(t=>(getAssign(t.id).who||rn(t.who)).toLowerCase()===person.toLowerCase());
+  const preTasks=PRE.filter(t=>(getAssign(t.id).who||rn(t.who)).toLowerCase()===person.toLowerCase());
+  const tlTasks=TIMELINE.map((t,i)=>({t,i})).filter(({t,i})=>(getAssign('tl'+i).who||rn(t.who)).toLowerCase()===person.toLowerCase());
+  const role=ROLES.find(r=>r.name&&r.name.toLowerCase()===person.toLowerCase());
+
+  let html=`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>${person} — Wedding Tasks</title>${buildPrintCSS()}</head><body>`;
+  html+=buildPrintHeader(`Personal task sheet · June 13, 2026`);
+  html+=`<div class="person-header">${person}</div>`;
+  if(role)html+=`<div class="role-label">${role.label}</div>`;
+
+  if(urgentTasks.length){
+    html+='<div class="cat-header">Urgent items</div>';
+    urgentTasks.forEach(t=>html+=taskPrintRow(t,t.id));
+  }
+
+  if(preTasks.length){
+    const cats=[...PRE_CATS];
+    cats.forEach(cat=>{
+      const items=preTasks.filter(t=>t.badge===cat);
+      if(!items.length)return;
+      const labels={legal:'Legal',rehearsal:'Rehearsal',photo:'Photography',vendor:'Vendors',audio:'Audio',ceremony:'Ceremony',food:'Food',bev:'Beverages',logistics:'Logistics',supplies:'Supplies',signage:'Signage',flowers:'Flowers',post:'Post-wedding'};
+      html+=`<div class="cat-header">${labels[cat]||cat}</div>`;
+      items.forEach(t=>html+=taskPrintRow(t,t.id));
+    });
+  }
+
+  if(tlTasks.length){
+    html+='<div class="cat-header" style="margin-top:12pt">Day-of timeline — June 13</div>';
+    tlTasks.forEach(({t,i})=>html+=tlPrintRow(t,i));
+  }
+
+  if(!urgentTasks.length&&!preTasks.length&&!tlTasks.length){
+    html+='<p style="color:#6B6862;font-style:italic;margin-top:12pt">No tasks are currently assigned to this person. Assign tasks using the Assigned to fields on each task card, then return here to print.</p>';
+  }
+
+  html+='</body></html>';
+  const w=window.open('','_blank');w.document.write(html);w.document.close();
+}
+function getFormData(){
+  const d={};
+  document.querySelectorAll('input[type=radio]:checked').forEach(r=>d['radio_'+r.name]=r.value);
+  document.querySelectorAll('input[type=checkbox][id^="s-"],input[type=checkbox][id^="g-"]').forEach(c=>d['check_'+c.id]=c.checked);
+  ['f-offname','f-offphone','f-procession','f-procue','f-escortpairs',
+   'f-announcement-text','f-getting-ready-attire','f-ceremon-extra',
+   'f-rehearsal-date','f-rehearsal-loc','f-rehearsal-lead','f-rehearsal-who','f-no-rehearsal-plan',
+   'f-shotlist','f-portrait-wrangler','f-photo-limits','f-activity-setup',
+   'f-soundwho','f-musicop','f-dnp','f-processional','f-recessional','f-cocktailmusic','f-dinnermusic','f-lastsong',
+   'f-fd-song','f-fdd-song','f-fdd-who','f-msd-song','f-msd-who','f-otherdance','f-speeches','f-emcee',
+   'f-extrafood','f-pizza','f-dessert','f-plates','f-dessertware','f-dietary',
+   'f-bridalfood','f-groomfood','f-coupleeat','f-couplefoodpref','f-vendormeals','f-vendormealwho',
+   'f-cardbox','f-giftload','f-ada','f-website','f-transport','f-weatherbackup','f-heat',
+   'f-sweep','f-sweeplist',
+   'f-bouto','f-corsages','f-bmbouquets','f-ceremonyflowers','f-centerpieces',
+   'f-waterstation','f-waterpurchase','f-watersetup','f-watermonitor','f-watertakedown','f-trash',
+   'f-signwho','f-decolight','f-pp','f-setup','f-cleanup','f-parking','f-giftwho',
+   'f-licreturn','f-rentreturn','f-thankyou','f-wantmore','f-dontwant'
+  ].forEach(id=>{const el=document.getElementById(id);if(el)d['field_'+id]=el.value;});
+  return d;
+}
+function applyFormData(data){
+  Object.entries(data).forEach(([k,v])=>{
+    if(k.startsWith('radio_')){const n=k.replace('radio_','');const el=document.querySelector(`input[type=radio][name="${n}"][value="${v}"]`);if(el)el.checked=true;}
+    else if(k.startsWith('check_')){const id=k.replace('check_','');const el=document.getElementById(id);if(el)el.checked=v;}
+    else if(k.startsWith('field_')){const id=k.replace('field_','');const el=document.getElementById(id);if(el)el.value=v||'';}
+  });
+}
+function saveSession(){
+  const session={version:'6.0',savedAt:new Date().toISOString(),weddingDate:'June 13, 2026',formData:getFormData(),checks,taskAssign,roles:ROLES.map(r=>({key:r.key,label:r.label,name:r.name}))};
+  const blob=new Blob([JSON.stringify(session,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='wedding-june13-2026-session.json';a.click();
+  URL.revokeObjectURL(url);
+  const ts=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const el=document.getElementById('last-saved');if(el)el.textContent='Saved '+ts;
+  const conf=document.getElementById('form-confirm');if(conf){conf.style.display='inline';setTimeout(()=>conf.style.display='none',2500);}
+}
+function loadSession(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const s=JSON.parse(e.target.result);
+      if(s.checks)checks={...s.checks};
+      if(s.taskAssign)taskAssign={...s.taskAssign};
+      if(s.roles)s.roles.forEach(sr=>{const r=ROLES.find(r=>r.key===sr.key);if(r)r.name=sr.name||'';});
+      if(s.formData)applyFormData(s.formData);
+      try{localStorage.setItem('wed-v6-checks',JSON.stringify(checks));}catch(err){}
+      try{localStorage.setItem('wed-v6-assign',JSON.stringify(taskAssign));}catch(err){}
+      rebuildDatalist();updatePersonFilters();renderAll();
+      const ts=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      const el=document.getElementById('last-saved');if(el)el.textContent='Loaded '+ts;
+    }catch(err){alert('Could not read session file. Please upload a valid wedding planner .json file.');}
+  };
+  reader.readAsText(file);event.target.value='';
+}
+function esc(s){if(s==null)return'';s=String(s).replace(/"/g,'""');if(s.includes(',')||s.includes('"')||s.includes('\n'))return`"${s}"`;return s;}
+function exportCSV(){
+  const fd=getFormData();
+  function fv(id){return fd['field_'+id]||'';}
+  function rv(n){return fd['radio_'+n]||'Not answered';}
+  let rows=[['Category','Question / Task','Answer / Status','Responsible','Notes / Duration']];
+  const fRows=[
+    ['Legal','Marriage license obtained?',rv('license'),rn('bride'),''],
+    ['Legal','Officiant confirmed?',rv('officiant'),rn('bride'),'Idaho Code § 32-303'],
+    ['Legal','Officiant name',fv('f-offname'),rn('bride'),''],
+    ['Legal','Officiant phone',fv('f-offphone'),rn('bride'),''],
+    ['Ceremony','Ceremony location',rv('ceremon-loc'),rn('pp'),'Two rooms hold ~30 seated'],
+    ['Ceremony','Processional order',fv('f-procession'),rn('pp'),''],
+    ['Ceremony','Processional cue person',fv('f-procue'),rn('pp'),''],
+    ['Ceremony','Groomsmen escort family?',rv('escort'),rn('gm1'),''],
+    ['Ceremony','Escort pairings',fv('f-escortpairs'),rn('gm1'),''],
+    ['Ceremony','Grand entrance announcement wording',rv('announcement')+' '+fv('f-announcement-text'),rn('emcee'),'Give exact wording to emcee in writing'],
+    ['Ceremony','First kiss discussed?',rv('firstkiss'),rn('bride'),''],
+    ['Ceremony','Dress bustle practiced?',rv('bustle'),rn('moh'),'Record a video for reference'],
+    ['Ceremony','Getting-ready attire for photos',fv('f-getting-ready-attire'),rn('bride'),'Photographer arrives 10:30 am'],
+    ['Ceremony','Vow books?',rv('vowbooks'),rn('bride'),''],
+    ['Ceremony','Programs?',rv('programs'),rn('bride'),''],
+    ['Ceremony','Additional ceremony notes',fv('f-ceremon-extra'),rn('bride'),''],
+    ['Rehearsal','Rehearsal planned?',rv('rehearsal'),rn('pp'),'20–30 min covers movement only'],
+    ['Rehearsal','Rehearsal date and time',fv('f-rehearsal-date'),rn('pp'),''],
+    ['Rehearsal','Rehearsal location',fv('f-rehearsal-loc'),rn('pp'),''],
+    ['Rehearsal','Rehearsal leader',fv('f-rehearsal-lead'),rn('pp'),'Same person cues walkers on June 13'],
+    ['Rehearsal','Rehearsal attendees',fv('f-rehearsal-who'),rn('pp'),''],
+    ['Rehearsal','No-rehearsal plan if applicable',fv('f-no-rehearsal-plan'),rn('pp'),''],
+    ['Photography','First look?',rv('firstlook'),rn('bride'),'Determines entire portrait timeline'],
+    ['Photography','Formal portrait shot list',fv('f-shotlist'),rn('bride'),'Max ~15 groupings'],
+    ['Photography','Sunset portrait session?',rv('sunset'),rn('bride'),'Idaho sunset ~9:15 pm June 13'],
+    ['Photography','Portrait wrangler',fv('f-portrait-wrangler'),rn('wrangler'),''],
+    ['Photography','Photo limits or off-limits',fv('f-photo-limits'),rn('bride'),''],
+    ['Guest experience','Cocktail hour activities planned',Object.entries(fd).filter(([k,v])=>k.startsWith('check_g-')&&v).map(([k])=>k.replace('check_g-','')).join(', ')||'None selected',rn('setup1'),''],
+    ['Guest experience','Activity setup person and time',fv('f-activity-setup'),rn('setup1'),''],
+    ['Guest experience','Dessert table timing',rv('desserttiming'),rn('moh'),''],
+    ['Guest experience','Couple appearance during cocktail hour?',rv('cocktailappear'),rn('bride'),''],
+    ['Audio','Sound system provider',rv('sound'),rn('musicop'),'Venue has no audio'],
+    ['Audio','Sound provider details',fv('f-soundwho'),rn('musicop'),''],
+    ['Audio','Wireless mics?',rv('mics'),rn('pp'),''],
+    ['Audio','Music operator',fv('f-musicop'),rn('musicop'),'Full-day role'],
+    ['Audio','Do-not-play list',fv('f-dnp'),rn('musicop'),''],
+    ['Audio','Processional song',fv('f-processional'),rn('musicop'),''],
+    ['Audio','Recessional song',fv('f-recessional'),rn('musicop'),''],
+    ['Audio','Cocktail music',fv('f-cocktailmusic'),rn('musicop'),''],
+    ['Audio','Dinner music',fv('f-dinnermusic'),rn('musicop'),''],
+    ['Audio','Last song',fv('f-lastsong'),rn('musicop'),''],
+    ['Dances','First dance?',rv('firstdance'),rn('bride'),''],
+    ['Dances','First dance song',fv('f-fd-song'),rn('musicop'),''],
+    ['Dances','First dance — full or fade?',rv('fdfade'),rn('musicop'),''],
+    ['Dances','Father-daughter dance?',rv('fdd'),rn('bride'),''],
+    ['Dances','Father-daughter song',fv('f-fdd-song'),rn('musicop'),''],
+    ['Dances','Father-daughter dancer',fv('f-fdd-who'),rn('bride'),''],
+    ['Dances','Mother-son dance?',rv('msd'),rn('groom'),''],
+    ['Dances','Mother-son song',fv('f-msd-song'),rn('musicop'),''],
+    ['Dances','Mother-son dancer',fv('f-msd-who'),rn('groom'),''],
+    ['Dances','Other dances',fv('f-otherdance'),rn('emcee'),''],
+    ['Speeches','Speakers — name, relationship, order',fv('f-speeches'),rn('emcee'),''],
+    ['Speeches','Time limit',rv('timelimit'),rn('emcee'),''],
+    ['Speeches','Speakers need mic?',rv('speechmic'),rn('emcee'),''],
+    ['Speeches','Emcee',fv('f-emcee'),rn('emcee'),''],
+    ['Food','Complete food plan is pizza + desserts only?',rv('foodplan'),rn('pp'),'Guests arrive 2pm dinner at 5:30pm'],
+    ['Food','Additional food',fv('f-extrafood'),rn('moh'),''],
+    ['Food','Pizza details',fv('f-pizza'),rn('pp'),''],
+    ['Food','Dessert table details',fv('f-dessert'),rn('moh'),''],
+    ['Food','Dinner plates and utensils',fv('f-plates'),rn('setup1'),'55+ guests'],
+    ['Food','Dessert serviceware',fv('f-dessertware'),rn('moh'),''],
+    ['Food','Dietary restrictions',fv('f-dietary'),rn('bride'),''],
+    ['Flowers','Groom boutonniere?',rv('groombouto'),rn('bride'),''],
+    ['Flowers','Groomsmen boutonnieres?',rv('gmsbouto'),rn('bride'),''],
+    ['Flowers','Boutonniere source and plan',fv('f-bouto'),rn('bride'),''],
+    ['Flowers','Corsages?',rv('corsages'),rn('bride'),''],
+    ['Flowers','Corsage details',fv('f-corsages'),rn('bride'),''],
+    ['Flowers','Bridesmaid bouquets?',rv('bmbouquets'),rn('bride'),''],
+    ['Flowers','Bridesmaid bouquet source',fv('f-bmbouquets'),rn('bride'),''],
+    ['Flowers','Ceremony flowers',fv('f-ceremonyflowers'),rn('setup1'),''],
+    ['Flowers','Centerpieces',fv('f-centerpieces'),rn('setup1'),''],
+    ['Pre-ceremony food','Bridal suite food plan?',rv('bridalfood'),rn('moh'),'5 hours before dinner'],
+    ['Pre-ceremony food','Bridal suite food details',fv('f-bridalfood'),rn('moh'),''],
+    ['Pre-ceremony food','Groom food plan?',rv('groomfood'),rn('groom'),''],
+    ['Pre-ceremony food','Groom food details',fv('f-groomfood'),rn('groom'),''],
+    ['Reception food','Who ensures couple eats',fv('f-coupleeat'),rn('pp'),'Named person brings plates to couple'],
+    ['Reception food','Couple food preferences to save',fv('f-couplefoodpref'),rn('pp'),''],
+    ['Vendor meals','Vendor meals provided?',rv('vendormeals'),rn('pp'),'Photographer and bartender on site 8+ hrs'],
+    ['Vendor meals','Vendor meal plan',fv('f-vendormeals'),rn('pp'),''],
+    ['Vendor meals','Which vendors need meals',fv('f-vendormealwho'),rn('pp'),'Confirm with each vendor before June 13'],
+    ['Cards and gifts','Card box planned?',rv('cardbox'),rn('setup1'),''],
+    ['Cards and gifts','Card box keeper and transport',fv('f-cardbox'),rn('setup1'),''],
+    ['Cards and gifts','Physical gifts at venue?',rv('gifts-at-venue'),rn('setup1'),''],
+    ['Cards and gifts','Who loads gifts at end of night',fv('f-giftload'),rn('family2'),''],
+    ['Accessibility','ADA needs among guests?',rv('ada'),rn('pp'),''],
+    ['Accessibility','ADA accommodations',fv('f-ada'),rn('pp'),''],
+    ['Guest communications','Wedding website?',rv('weddingwebsite'),rn('bride'),''],
+    ['Guest communications','Website URL or plan',fv('f-website'),rn('bride'),''],
+    ['Guest communications','All guests have key info?',rv('guestinfo'),rn('bride'),'Address, parking, hotel, day-of contact'],
+    ['Transportation','Guest rideshare plan',rv('rideshare'),rn('pp'),'Confirm rideshare availability in Idaho'],
+    ['Transportation','Transportation plan details',fv('f-transport'),rn('pp'),''],
+    ['Transportation','Transport info communicated to guests?',rv('transportinfo'),rn('pp'),''],
+    ['Weather','Morning-of weather check planned?',rv('weathercheck'),rn('pp'),'Check by 7:00 am June 13'],
+    ['Weather','Outdoor backup plan',fv('f-weatherbackup'),rn('pp'),''],
+    ['Weather','Heat mitigation plan',fv('f-heat'),rn('pp'),''],
+    ['End of night','Sweep person assigned',fv('f-sweep'),rn('cleanup1'),'Walk every room before couple departs'],
+    ['End of night','Sweep checklist',fv('f-sweeplist'),rn('cleanup1'),''],
+    ['Beverages','Water station location',fv('f-waterstation'),rn('setup1'),''],
+    ['Beverages','Who purchases water and soft drinks',fv('f-waterpurchase'),rn('setup1'),'Buy day before'],
+    ['Beverages','Who sets up water station',fv('f-watersetup'),rn('setup1'),''],
+    ['Beverages','Who monitors water station',fv('f-watermonitor'),rn('family1'),'Check every 30–45 min'],
+    ['Beverages','Who breaks down water station',fv('f-watertakedown'),rn('family1'),''],
+    ['Beverages','Non-alcoholic options',rv('nonalc'),rn('setup1'),''],
+    ['Beverages','Bartender covers non-alcoholic?',rv('barcoversna'),rn('pp'),'Confirm with bartender'],
+    ['Beverages','Trash plan',fv('f-trash'),rn('cleanup1'),''],
+    ['Signage','Signs planned',Object.entries(fd).filter(([k,v])=>k.startsWith('check_s-')&&v).map(([k])=>k.replace('check_s-','')).join(', ')||'None selected',rn('setup1'),''],
+    ['Signage','Sign maker and transporter',fv('f-signwho'),rn('setup1'),''],
+    ['Lighting','Venue lighting adequate?',rv('lighting'),rn('setup1'),'Sunset ~9:15 pm June 13'],
+    ['Lighting','Decorative lighting plan',fv('f-decolight'),rn('setup1'),''],
+    ['Logistics','Day-of point person',fv('f-pp'),rn('pp'),'Not bride or groom'],
+    ['Logistics','Setup plan',fv('f-setup'),rn('setup1'),''],
+    ['Logistics','Cleanup plan',fv('f-cleanup'),rn('cleanup1'),''],
+    ['Logistics','Parking plan',fv('f-parking'),rn('pp'),''],
+    ['Logistics','Bride second shoes?',rv('shoes'),rn('bride'),''],
+    ['Logistics','Wedding party gifts?',rv('gifts'),rn('moh'),''],
+    ['Logistics','Gift plan',fv('f-giftwho'),rn('moh'),''],
+    ['Logistics','Private couple moment?',rv('moment'),rn('bride'),''],
+    ['Post-wedding','Marriage license return',fv('f-licreturn'),rn('bride'),'30 days from June 13'],
+    ['Post-wedding','Rental returns',fv('f-rentreturn'),rn('pp'),''],
+    ['Post-wedding','Thank-you notes',fv('f-thankyou'),rn('bride'),''],
+    ['Other','Want to happen',fv('f-wantmore'),rn('bride'),''],
+    ['Other','Do not want to happen',fv('f-dontwant'),rn('bride'),''],
+  ];
+  fRows.forEach(r=>rows.push(r));
+  rows.push(['','','','','']);rows.push(['URGENT GAPS','','','','']);
+  URGENT.forEach(t=>rows.push(['Urgent',t.title,checks[t.id]?'Resolved':'Pending',rn(t.who),t.note||'']));
+  rows.push(['','','','','']);rows.push(['PRE-WEDDING TASKS','','','','']);
+  PRE.forEach(t=>rows.push([t.badge||'Pre-wedding',t.title,checks[t.id]?'Done':'Pending',rn(t.who),t.note||'']));
+  rows.push(['','','','','']);rows.push(['DAY-OF TIMELINE','','','','']);
+  TIMELINE.forEach((t,i)=>rows.push(['Timeline',t.time+' — '+t.title,checks['tl'+i]?'Done':'Scheduled',rn(t.who),(t.dur?'Duration: '+t.dur+'. ':'')+( t.note||'')]));
+  const csv=rows.map(r=>r.map(esc).join(',')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='wedding-june13-2026-complete.csv';a.click();
+  URL.revokeObjectURL(url);
+}
+function renderAll(){renderUrgent();buildPreFilters();renderPre();renderTimeline();renderPeople();rebuildDatalist();updatePersonFilters();upCounts();}
+renderAll();
+</script>
+</body>
+</html>
